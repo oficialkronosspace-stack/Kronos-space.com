@@ -327,3 +327,5 @@ Este es un proyecto de demostración. Siéntete libre de mejorar cualquier parte
 ## 📄 Licencia
 
 MIT License
+#   K R O N O S - S U P E R - A P P  
+ 
