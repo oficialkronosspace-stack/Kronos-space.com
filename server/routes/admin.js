@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const requireAdmin = require('../middleware/requireAdmin');
 
-// Asume que existe authMiddleware. Ajusta el require si tu proyecto usa otro nombre.
+// auth.js exporta { protect, checkRole } — usamos protect como middleware
 let auth;
-try { auth = require('../middleware/auth'); }
+try { auth = require('../middleware/auth').protect; }
 catch { auth = (req, res, next) => next(); } // fallback dev
 
 const adminController = require('../controllers/adminController');

@@ -1,5 +1,5 @@
 const express = require('express');
-const auth = require('../middleware/auth');
+const { protect: auth } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const videoController = require('../controllers/videoController');
 
