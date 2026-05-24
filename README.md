@@ -1,16 +1,40 @@
-# React + Vite
+# ScriptDrop ⚡
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Generador de scripts virales para TikTok y Reels con IA.
 
-Currently, two official plugins are available:
+## Stack
+- React + Vite + Tailwind CSS
+- Supabase (auth + base de datos)
+- Anthropic API (generación con IA)
+- Vercel (deploy)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup local
 
-## React Compiler
+1. Clona el repo:
+```bash
+git clone https://github.com/donovan-hue/scriptdrop.git
+cd scriptdrop
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. Crea `.env.local` en la raíz:
+```
+VITE_SUPABASE_URL=tu_supabase_url
+VITE_SUPABASE_ANON_KEY=tu_supabase_anon_key
+```
 
-## Expanding the ESLint configuration
+3. Corre la app:
+```bash
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+4. Abre `http://localhost:5173`
+
+## Fases completadas
+- [x] Fase 1 — Definición
+- [x] Fase 2 — Setup técnico + estructura
+- [x] Fase 3 — Auth + Supabase
+- [x] Fase 4 — Generador de scripts con IA
+- [ ] Fase 5 — Pagos con Stripe
+- [ ] Fase 6 — UI/UX final
+- [ ] Fase 7 — Deploy a Vercel
