@@ -136,7 +136,9 @@ app.use('/api/group-chats', require('./routes/groupChats')); // Chat Grupal
 app.use('/api/notifications', require('./routes/notifications')); // Centro de notificaciones
 app.use('/api/avatar', require('./routes/avatar')); // Avatar 3D Customizable + Tienda
 app.use('/api/subscription', subscriptionRoutes); // Kronos Pro / Suscripciones (Stripe)
-app.use('/api/reservations', require('./routes/reservations')); // Reservaciones
+app.use('/api/reservations', require('./routes/reservations'));
+app.use('/api/events',        require('./routes/events'));
+app.use('/api/gamification',  require('./routes/gamification')); // Reservaciones
 app.use('/api/health', require('./routes/health')); // Health & Fitness
 
 // Initialize Socket.io singleton (para que controllers/routes puedan emitir eventos)

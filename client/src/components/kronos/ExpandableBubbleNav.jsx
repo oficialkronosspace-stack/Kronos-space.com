@@ -42,7 +42,7 @@ const ExpandableBubbleNav = () => {
           { icon: '👥', label: 'Grupos', path: '/social/groups' },
           { icon: '🏘️', label: 'Comunidades', path: '/communities' },
           { icon: '🔴', label: 'Salas LIVE', path: '/live' },
-          { icon: '🎉', label: 'Eventos', path: '/social/events' },
+          { icon: '🎪', label: 'Eventos', path: '/events' },
         ],
       },
       perfil: {
@@ -56,6 +56,7 @@ const ExpandableBubbleNav = () => {
           { icon: '🏪', label: 'Mi Tienda', path: '/shop' },
           { icon: '🛒', label: 'Mis Compras', path: '/marketplace' },
           { icon: '💰', label: 'Cartera', path: '/wallet' },
+          { icon: '🏆', label: 'Gamificación', path: '/gamification' },
           { icon: '📊', label: 'Estadísticas', path: '/settings/stats' },
         ],
       },

@@ -1,0 +1,183 @@
+/* ===== BOTÓN BURBUJA FLOTANTE 3D TORNASOL ===== */
+
+.btn-burbuja-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 32px;
+  min-width: 160px;
+  height: 64px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #06B6D4 100%);
+  background-size: 200% 200%;
+  color: white;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  outline: none;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  box-shadow:
+    0 10px 30px rgba(139, 92, 246, 0.4),
+    0 0 40px rgba(236, 72, 153, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  animation:
+    float-bubble 4s ease-in-out infinite,
+    tornasol-shift 8s ease-in-out infinite,
+    pulse-glow 3s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+/* Brillo glossy superior (cristal) */
+.btn-burbuja-3d::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 20%;
+  width: 60%;
+  height: 30%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Reflexión inferior */
+.btn-burbuja-3d::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 30%;
+  width: 40%;
+  height: 15%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  filter: blur(4px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-burbuja-3d:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow:
+    0 20px 50px rgba(139, 92, 246, 0.6),
+    0 0 80px rgba(236, 72, 153, 0.5),
+    0 0 100px rgba(6, 182, 212, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  animation-play-state: paused;
+}
+
+.btn-burbuja-3d:active {
+  transform: translateY(-2px) scale(0.95);
+  transition: all 0.1s;
+}
+
+.btn-burbuja-3d:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation-play-state: paused;
+}
+
+/* ── VARIANTES DE TAMAÑO ── */
+.btn-burbuja-3d.size-sm {
+  padding: 8px 18px;
+  height: 40px;
+  font-size: 13px;
+  min-width: 100px;
+  border-radius: 20px;
+}
+
+.btn-burbuja-3d.size-md {
+  padding: 16px 32px;
+  height: 56px;
+  font-size: 15px;
+  min-width: 140px;
+}
+
+.btn-burbuja-3d.size-lg {
+  padding: 20px 44px;
+  height: 72px;
+  font-size: 18px;
+  min-width: 220px;
+  border-radius: 36px;
+}
+
+/* Circular (solo icono) */
+.btn-burbuja-3d.icon-only {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 0;
+  min-width: unset;
+}
+
+.btn-burbuja-3d.icon-only.size-sm {
+  width: 40px;
+  height: 40px;
+}
+
+.btn-burbuja-3d.icon-only.size-lg {
+  width: 72px;
+  height: 72px;
+}
+
+/* Outline — borde tornasol, fondo transparente */
+.btn-burbuja-3d.outline {
+  background: white;
+  border: 2.5px solid transparent;
+  background-image:
+    linear-gradient(white, white),
+    linear-gradient(135deg, #EC4899, #8B5CF6, #06B6D4);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  color: #8B5CF6;
+  box-shadow:
+    0 5px 20px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  animation: float-bubble 4s ease-in-out infinite;
+}
+
+.btn-burbuja-3d.outline:hover {
+  box-shadow:
+    0 10px 30px rgba(139, 92, 246, 0.35),
+    0 0 40px rgba(236, 72, 153, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ── ANIMACIONES ── */
+
+@keyframes float-bubble {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+
+@keyframes tornasol-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 10px 30px rgba(139, 92, 246, 0.4),
+      0 0 40px rgba(236, 72, 153, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 15px 40px rgba(139, 92, 246, 0.6),
+      0 0 60px rgba(236, 72, 153, 0.5),
+      0 0 80px rgba(6, 182, 212, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  }
+}

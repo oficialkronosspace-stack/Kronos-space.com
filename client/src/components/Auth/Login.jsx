@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { HoloText } from '../kronos';
+import { HoloText, BotonBurbuja3D } from '../kronos';
 
 const API_BASE = process.env.REACT_APP_API_URL
   ? process.env.REACT_APP_API_URL.replace('/api', '')
@@ -128,18 +128,15 @@ function Login() {
             required
             style={inputStyle}
           />
-          <button
+          <BotonBurbuja3D
+            as="button"
             type="submit"
+            size="md"
             disabled={loading}
-            style={{
-              marginTop: 4, padding: '14px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-              background: HOLO, color: '#fff', fontSize: 14, fontWeight: 700,
-              fontFamily: 'inherit', letterSpacing: 1, opacity: loading ? 0.7 : 1,
-              boxShadow: '0 4px 16px rgba(79,172,254,0.3)',
-            }}
+            style={{ width: '100%', marginTop: 4 }}
           >
             {loading ? 'Entrando...' : 'ENTRAR'}
-          </button>
+          </BotonBurbuja3D>
         </form>
 
         <div style={{ marginTop: 12, textAlign: 'center' }}>

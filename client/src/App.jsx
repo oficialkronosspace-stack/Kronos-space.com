@@ -76,6 +76,8 @@ const Reservations    = lazy(() => import('./pages/Reservations'));
 const Health          = lazy(() => import('./pages/Health'));
 const AvatarPage      = lazy(() => import('./pages/Avatar'));
 const VideoEditorPage = lazy(() => import('./pages/VideoEditor'));
+const EventsPage      = lazy(() => import('./pages/Events'));
+const GamificationPage = lazy(() => import('./pages/Gamification'));
 
 const LOADING = (
   <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -144,6 +146,8 @@ function App() {
             <Route path="/health"                element={<P><Health /></P>} />
             <Route path="/avatar"                element={<P><AvatarPage /></P>} />
             <Route path="/video-editor"          element={<P><VideoEditorPage /></P>} />
+            <Route path="/events"                element={<P><EventsPage /></P>} />
+            <Route path="/gamification"          element={<P><GamificationPage /></P>} />
             <Route path="/subscription/success"  element={<ProtectedRoute><SubscriptionSuccess /></ProtectedRoute>} />
 
             {/* Admin */}

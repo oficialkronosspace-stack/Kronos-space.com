@@ -83,6 +83,16 @@ const IconSettings = () => (
     <path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" fill="url(#iridescent-grad)"/>
   </svg>
 );
+const IconEvents = () => (
+  <svg viewBox="0 0 24 24" width="22" height="22" filter="url(#3d-glass)">
+    <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" fill="url(#iridescent-grad)"/>
+  </svg>
+);
+const IconGamification = () => (
+  <svg viewBox="0 0 24 24" width="22" height="22" filter="url(#3d-glass)">
+    <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm7 6c-1.65 0-3-1.35-3-3V5h6v6c0 1.65-1.35 3-3 3zm7-6c0 1.3-.84 2.4-2 2.82V7h2v1z" fill="url(#iridescent-grad)"/>
+  </svg>
+);
 
 const NAV_ITEMS = [
   { Icon: IconHome,        label: 'Inicio',         to: '/feed' },
@@ -98,6 +108,8 @@ const NAV_ITEMS = [
   { Icon: IconAvatar,      label: 'Avatar',          to: '/avatar' },
   { Icon: IconReserv,      label: 'Reservaciones',   to: '/reservations' },
   { Icon: IconVideo,       label: 'Video Editor',    to: '/video-editor' },
+  { Icon: IconEvents,      label: 'Eventos',         to: '/events' },
+  { Icon: IconGamification, label: 'Gamificación',  to: '/gamification' },
   { Icon: IconSettings,    label: 'Ajustes',         to: '/settings' },
 ];
 

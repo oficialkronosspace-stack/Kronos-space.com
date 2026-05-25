@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { HoloText } from '../kronos';
+import { HoloText, BotonBurbuja3D } from '../kronos';
 
 const HOLO = 'linear-gradient(135deg,#4facfe,#00f2fe,#f3a0ff,#ff85a2)';
 
@@ -121,14 +121,15 @@ function Register() {
 
           <input style={inputStyle} name="password" type="password" placeholder="Contraseña (mín. 6 caracteres)" value={formData.password} onChange={handleChange} required />
 
-          <button type="submit" disabled={loading} style={{
-            marginTop: 4, padding: '14px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-            background: HOLO, color: '#fff', fontSize: 14, fontWeight: 700,
-            fontFamily: 'inherit', letterSpacing: 1, opacity: loading ? 0.7 : 1,
-            boxShadow: '0 4px 16px rgba(79,172,254,0.3)',
-          }}>
+          <BotonBurbuja3D
+            as="button"
+            type="submit"
+            size="md"
+            disabled={loading}
+            style={{ width: '100%', marginTop: 4 }}
+          >
             {loading ? 'Creando cuenta...' : 'REGISTRARSE'}
-          </button>
+          </BotonBurbuja3D>
         </form>
 
         <div style={{ marginTop: 24, textAlign: 'center', color: 'rgba(10,10,20,0.45)', fontSize: 13 }}>
