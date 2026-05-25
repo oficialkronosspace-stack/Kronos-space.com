@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GlassCard, BottomNav } from '../components/kronos';
+import { GlassCard } from '../components/kronos';
 
 const CSS_FILTERS = [
   { label: 'Normal', value: 'none' },
@@ -646,7 +646,6 @@ export default function VideoEditor() {
           50% { opacity: 0.3; }
         }
       `}</style>
-      <BottomNav />
     </div>
   );
 }

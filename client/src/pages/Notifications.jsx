@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { GlassCard, HoloText, BottomNav } from '../components/kronos';
+import { GlassCard, HoloText } from '../components/kronos';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -175,8 +175,6 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
-
-      <BottomNav />
     </div>
   );
 }

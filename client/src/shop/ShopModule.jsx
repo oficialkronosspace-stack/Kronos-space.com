@@ -160,7 +160,6 @@ function ProductList({ products, cart, onAddToCart, onViewProduct }) {
           </div>
         )}
       </div>
-      <BottomNav />
     </div>
   );
 }
@@ -218,7 +217,6 @@ function ProductDetail({ products, onAddToCart }) {
           {added ? '✓ Agregado al carrito' : product.stock === 0 ? 'Agotado' : '🛒 Agregar al carrito'}
         </button>
       </div>
-      <BottomNav />
     </div>
   );
 }
@@ -288,7 +286,6 @@ function Cart({ cart, setCart }) {
           </>
         )}
       </div>
-      <BottomNav />
     </div>
   );
 }
@@ -380,7 +377,6 @@ function Checkout({ cart }) {
           {loading ? 'Procesando...' : '✓ Confirmar orden'}
         </button>
       </form>
-      <BottomNav />
     </div>
   );
 }
@@ -449,7 +445,6 @@ function MyOrders() {
           );
         })}
       </div>
-      <BottomNav />
     </div>
   );
 }

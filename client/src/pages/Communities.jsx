@@ -2,7 +2,7 @@ import { SkeletonList } from '../components/kronos';
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { GlassCard, HoloText, BottomNav } from '../components/kronos';
+import { GlassCard, HoloText } from '../components/kronos';
 import { AuthContext } from '../context/AuthContext';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -244,7 +244,6 @@ export default function Communities() {
       </div>
 
       {creating && <CreateCommunityModal onClose={() => setCreating(false)} onCreated={fetchCommunities} />}
-      <BottomNav />
     </div>
   );
 }

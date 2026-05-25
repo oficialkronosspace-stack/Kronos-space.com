@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { GlassCard, HoloText, BottomNav } from '../components/kronos';
+import { GlassCard, HoloText } from '../components/kronos';
 import { AuthContext } from '../context/AuthContext';
 
 const SOCKET_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -520,8 +520,6 @@ export default function Live() {
       {incomingCall && (
         <IncomingCallModal callerName={incomingCall.callerName} onAccept={acceptCall} onReject={rejectCall} />
       )}
-
-      <BottomNav />
     </div>
   );
 }

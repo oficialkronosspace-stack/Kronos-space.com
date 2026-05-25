@@ -63,28 +63,35 @@ export default function Welcome() {
         </div>
 
         <h1 style={{
-          fontSize: 52, fontWeight: 900, letterSpacing: 6, margin: '0 0 8px',
-          background: HOLO, backgroundSize: '200% 200%',
+          fontSize: 'clamp(56px, 14vw, 80px)', fontWeight: 900, letterSpacing: 10, margin: '0 0 8px',
+          background: 'linear-gradient(90deg,#EC4899,#8B5CF6,#06B6D4,#8B5CF6,#EC4899)',
+          backgroundSize: '300% 300%',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          animation: 'tornasol-hero 8s ease-in-out infinite',
+          animation: 'tornasol-hero 5s ease-in-out infinite',
+          filter: 'drop-shadow(0 4px 16px rgba(139,92,246,0.4)) drop-shadow(0 0 40px rgba(6,182,212,0.2))',
         }}>
           KRONOS
         </h1>
-        <p style={{ color: 'rgba(10,10,20,0.5)', fontSize: 16, marginBottom: 8 }}>
-          Tus 15 Mundos en Uno
-        </p>
-        <p style={{ color: 'rgba(10,10,20,0.38)', fontSize: 13, maxWidth: 320, margin: '0 auto 36px', lineHeight: 1.6 }}>
-          Red social · Tienda · Wallet · Tokens · Eventos · LIVE · Comunidades y más
+        <p style={{
+          fontSize: 'clamp(11px, 3vw, 14px)', fontWeight: 300, letterSpacing: 2,
+          background: 'linear-gradient(90deg,rgba(236,72,153,0.6),#8B5CF6,#06B6D4,#8B5CF6,rgba(236,72,153,0.6))',
+          backgroundSize: '200% auto',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          animation: 'slogan-shimmer 6s linear infinite',
+          margin: '0 auto 36px',
+        }}>
+          Tu tiempo. Tu espacio. Tu orden.
         </p>
 
         {/* Botones burbuja del plan */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
-          <BotonBurbuja3D size="lg" onClick={() => navigate('/auth/register')}>
-            🚀 Inicia Ahora
+          <BotonBurbuja3D size="lg" onClick={() => navigate('/auth/login')}>
+            🚀 Iniciar sesión
           </BotonBurbuja3D>
-          <BotonBurbuja3D size="md" variant="outline" onClick={() => navigate('/auth/login')}>
-            Inicia sesión
+          <BotonBurbuja3D size="md" variant="outline" onClick={() => navigate('/auth/register')}>
+            ✨ Crear cuenta
           </BotonBurbuja3D>
           <button onClick={() => setShowFeatures(v => !v)} style={{
             background: 'none', border: 'none', cursor: 'pointer',
@@ -152,6 +159,10 @@ export default function Welcome() {
         @keyframes tornasol-hero {
           0%,100% { background-position: 0% 50%;   }
           50%      { background-position: 100% 50%; }
+        }
+        @keyframes slogan-shimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
         }
       `}</style>
     </div>

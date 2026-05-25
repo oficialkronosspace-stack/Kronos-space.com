@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { GlassCard, HoloText, BottomNav, HashtagText } from './kronos';
+import { GlassCard, HoloText, HashtagText } from './kronos';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -254,8 +254,6 @@ export default function UniversalSearch() {
           </div>
         )}
       </div>
-
-      <BottomNav />
     </div>
   );
 }

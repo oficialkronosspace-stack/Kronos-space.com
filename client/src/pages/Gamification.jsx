@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import { GlassCard, BottomNav, BotonBurbuja3D } from '../components/kronos';
+import { GlassCard, BotonBurbuja3D } from '../components/kronos';
 
 const API = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -290,8 +290,6 @@ export default function Gamification() {
             })}
           </div>
         )}
-      </div>
-      <BottomNav />
-    </div>
+      </div>    </div>
   );
 }

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TwoFactorSetup from '../components/security/TwoFactorSetup';
 import ActiveSessions from '../components/security/ActiveSessions';
-import { GlassCard, BottomNav } from '../components/kronos';
+import { GlassCard } from '../components/kronos';
 import { AuthContext } from '../context/AuthContext';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -302,8 +302,6 @@ export default function Settings() {
           </motion.div>
         </AnimatePresence>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { GlassCard, HoloText, BottomNav } from '../components/kronos';
+import { GlassCard, HoloText } from '../components/kronos';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -517,8 +517,6 @@ export default function Wallet() {
 
       {modal === 'send' && <SendModal balance={data?.cash?.balance || 0} onClose={() => setModal(null)} onSuccess={msg => { showToast(msg); fetchWallet(); }} />}
       {modal === 'deposit' && <DepositModal onClose={() => setModal(null)} onSuccess={msg => { showToast(msg); fetchWallet(); }} />}
-
-      <BottomNav />
     </div>
   );
 }
