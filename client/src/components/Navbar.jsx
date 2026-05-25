@@ -1,164 +1,137 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import NotificationCenter from './NotificationCenter';
-import TierBadge from './TierBadge';
-import useSubscription from '../hooks/useSubscription';
-
-const NAV_LINKS = [
-  { to: '/feed',         label: 'Inicio',       icon: '🏠' },
-  { to: '/search',       label: 'Buscar',        icon: '🔍' },
-  { to: '/social/chat',  label: 'Chat',          icon: '💬' },
-  { to: '/communities',  label: 'Comunidades',   icon: '🏛️' },
-  { to: '/shop',         label: 'Tienda',         icon: '🛒' },
-  { to: '/marketplace',  label: 'Marketplace',   icon: '🛍️' },
-  { to: '/wallet',       label: 'Wallet',        icon: '💳' },
-  { to: '/live',         label: 'Live',          icon: '🔴' },
-  { to: '/health',       label: 'Health',        icon: '❤️' },
-  { to: '/avatar',       label: 'Avatar',        icon: '🎭' },
-  { to: '/reservations', label: 'Reservaciones', icon: '📅' },
-  { to: '/video-editor', label: 'Video Editor',  icon: '🎬' },
-];
 
 export default function Navbar() {
-  const { user, logout } = useContext(AuthContext);
-  const { tier } = useSubscription();
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/auth/login');
-  };
-
   const userId = user?._id || user?.id;
 
   return (
     <>
-      <nav style={{
-        position: 'sticky', top: 0, zIndex: 200,
-        background: 'rgba(255,255,255,0.97)',
-        borderBottom: '1.5px solid rgba(79,172,254,0.12)',
-        backdropFilter: 'blur(16px)',
-        boxShadow: '0 2px 16px rgba(79,172,254,0.08)',
-        fontFamily: "'Outfit', sans-serif",
-      }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px', display: 'flex', alignItems: 'center', height: 56, gap: 16 }}>
-
-          {/* Logo */}
-          <Link to="/feed" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <span style={{ fontSize: 22 }}>⭐</span>
-            <span style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.5, background: 'linear-gradient(135deg,#a855f7,#06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Kronos
-            </span>
-          </Link>
-
-          {/* Desktop links */}
-          <div style={{ flex: 1, display: 'flex', gap: 2, overflowX: 'auto', scrollbarWidth: 'none' }}
-            className="hide-scrollbar desktop-nav">
-            {NAV_LINKS.map(link => {
-              const active = pathname === link.to || (link.to !== '/feed' && pathname.startsWith(link.to));
-              return (
-                <Link key={link.to} to={link.to}
-                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 20, textDecoration: 'none', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', color: active ? '#0a0a14' : 'rgba(10,10,20,0.5)', background: active ? 'linear-gradient(135deg,rgba(79,172,254,0.15),rgba(243,160,255,0.12))' : 'transparent', border: active ? '1px solid rgba(79,172,254,0.25)' : '1px solid transparent', transition: 'all 0.15s', flexShrink: 0 }}>
-                  <span style={{ fontSize: 14 }}>{link.icon}</span>
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
-            {user?.role === 'admin' && (
-              <Link to="/admin"
-                style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 20, textDecoration: 'none', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', color: '#c4b5fd', background: 'rgba(124,58,237,0.2)', border: '1px solid rgba(124,58,237,0.3)', flexShrink: 0 }}>
-                🛡️ Admin
-              </Link>
-            )}
-          </div>
-
-          {/* Right side */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            {user && (
-              <>
-                <NotificationCenter />
-
-                <Link to={userId ? `/profile/${userId}` : '/auth/login'}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none', padding: '4px 8px', borderRadius: 20, background: 'rgba(79,172,254,0.07)', border: '1px solid rgba(79,172,254,0.15)' }}>
-                  <img
-                    src={user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random&color=fff&size=32`}
-                    alt={user.username}
-                    style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                  <span style={{ color: '#0a0a14', fontSize: 12, fontWeight: 600, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    className="hidden-mobile">
-                    {user.username}
-                  </span>
-                  {tier && tier !== 'free' && <TierBadge tier={tier} />}
-                </Link>
-
-                <Link to="/settings"
-                  style={{ color: 'rgba(10,10,20,0.5)', fontSize: 18, textDecoration: 'none', padding: 4 }}
-                  title="Configuración">
-                  ⚙️
-                </Link>
-
-                <button onClick={handleLogout}
-                  style={{ padding: '5px 12px', borderRadius: 20, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
-                  className="hidden-mobile">
-                  Salir
-                </button>
-              </>
-            )}
-
-            {/* Hamburger — mobile only */}
-            <button
-              onClick={() => setMenuOpen(m => !m)}
-              className="hamburger-btn"
-              style={{ background: 'none', border: 'none', color: '#0a0a14', fontSize: 22, cursor: 'pointer', padding: 4, lineHeight: 1 }}>
-              {menuOpen ? '✕' : '☰'}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile drawer */}
-        {menuOpen && (
-          <div style={{ background: 'rgba(255,255,255,0.98)', borderTop: '1.5px solid rgba(79,172,254,0.12)', padding: '12px 16px 20px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 16 }}>
-              {NAV_LINKS.map(link => {
-                const active = pathname === link.to || (link.to !== '/feed' && pathname.startsWith(link.to));
-                return (
-                  <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 4px', borderRadius: 12, textDecoration: 'none', color: active ? '#4facfe' : 'rgba(10,10,20,0.6)', background: active ? 'rgba(79,172,254,0.1)' : 'rgba(10,10,20,0.04)', fontSize: 10, fontWeight: 600 }}>
-                    <span style={{ fontSize: 20 }}>{link.icon}</span>
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Link to="/settings" onClick={() => setMenuOpen(false)}
-                style={{ flex: 1, padding: '10px', borderRadius: 12, background: 'rgba(79,172,254,0.07)', border: '1px solid rgba(79,172,254,0.15)', color: '#0a0a14', textDecoration: 'none', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
-                ⚙️ Configuración
-              </Link>
-              <button onClick={() => { handleLogout(); setMenuOpen(false); }}
-                style={{ flex: 1, padding: '10px', borderRadius: 12, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#ef4444', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                🚪 Salir
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
-
       <style>{`
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .hidden-mobile { display: none !important; }
-          .hamburger-btn { display: flex !important; }
+        @keyframes kronos-tornasol {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
-        @media (min-width: 769px) {
-          .hamburger-btn { display: none !important; }
+        @keyframes kronos-glow-fade {
+          0%,100% { text-shadow: 0 0 18px rgba(236,72,153,0.5), 0 0 40px rgba(139,92,246,0.3), 0 0 80px rgba(6,182,212,0.15); }
+          33%     { text-shadow: 0 0 24px rgba(139,92,246,0.6), 0 0 48px rgba(6,182,212,0.35), 0 0 90px rgba(236,72,153,0.15); }
+          66%     { text-shadow: 0 0 20px rgba(6,182,212,0.55), 0 0 44px rgba(236,72,153,0.3), 0 0 85px rgba(139,92,246,0.15); }
+        }
+        @keyframes slogan-shimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
         }
       `}</style>
+
+      <nav style={{
+        position: 'sticky', top: 0, zIndex: 200,
+        background: 'rgba(255,255,255,0.92)',
+        borderBottom: '1px solid rgba(139,92,246,0.12)',
+        backdropFilter: 'blur(20px)',
+        fontFamily: "'Outfit', sans-serif",
+        padding: '10px 16px',
+      }}>
+        <div style={{
+          maxWidth: 680,
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+        }}>
+
+          {/* Avatar izquierda */}
+          <div
+            onClick={() => navigate(userId ? `/profile/${userId}` : '/auth/login')}
+            style={{ cursor: 'pointer', flexShrink: 0 }}
+          >
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%',
+              background: 'linear-gradient(135deg,#EC4899,#8B5CF6,#06B6D4)',
+              padding: 2,
+              boxShadow: '0 0 12px rgba(139,92,246,0.4)',
+            }}>
+              <img
+                src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'K')}&background=8B5CF6&color=fff&size=40`}
+                alt=""
+                style={{
+                  width: '100%', height: '100%',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  border: '2px solid rgba(255,255,255,0.9)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Centro — KRONOS + slogan */}
+          <div style={{ textAlign: 'center', flex: 1 }}>
+            {/* KRONOS 3D tornasol */}
+            <div style={{
+              fontSize: 'clamp(22px, 5vw, 30px)',
+              fontWeight: 900,
+              letterSpacing: '0.18em',
+              fontFamily: "'Outfit', sans-serif",
+              background: 'linear-gradient(90deg, #EC4899, #8B5CF6, #06B6D4, #8B5CF6, #EC4899)',
+              backgroundSize: '300% 300%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'kronos-tornasol 5s ease-in-out infinite, kronos-glow-fade 5s ease-in-out infinite',
+              textTransform: 'uppercase',
+              lineHeight: 1.1,
+              // Sombra desvanecida tornasol (filtro sobre el contenedor)
+              filter: 'drop-shadow(0 2px 8px rgba(139,92,246,0.35)) drop-shadow(0 0 20px rgba(6,182,212,0.2))',
+            }}>
+              KRONOS
+            </div>
+
+            {/* Slogan */}
+            <div style={{
+              fontSize: 'clamp(9px, 2.2vw, 11px)',
+              fontWeight: 300,
+              letterSpacing: '0.08em',
+              background: 'linear-gradient(90deg, rgba(236,72,153,0.5), #8B5CF6, #06B6D4, #8B5CF6, rgba(236,72,153,0.5))',
+              backgroundSize: '200% auto',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'slogan-shimmer 6s linear infinite',
+              marginTop: 2,
+              whiteSpace: 'nowrap',
+            }}>
+              Tu tiempo. Tu espacio. Tu orden.
+            </div>
+          </div>
+
+          {/* Lupa derecha */}
+          <div
+            onClick={() => navigate('/search')}
+            style={{
+              flexShrink: 0,
+              width: 40, height: 40,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,0.5), rgba(139,92,246,0.12))',
+              border: '1.5px solid rgba(139,92,246,0.25)',
+              backdropFilter: 'blur(10px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 18,
+              cursor: 'pointer',
+              boxShadow: '0 2px 12px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.6)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.6)'}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 12px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.6)'}
+          >
+            🔍
+          </div>
+
+        </div>
+      </nav>
     </>
   );
 }

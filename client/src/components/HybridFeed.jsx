@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { HoloText, GlassCard, BottomNav, KronosImage } from './kronos';
+import { HoloText, GlassCard, KronosImage } from './kronos';
 import { AuthContext } from '../context/AuthContext';
 import StoriesBar from './stories/StoriesBar';
 import FollowSuggestions from './FollowSuggestions';
@@ -385,7 +385,6 @@ function HybridFeed() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }
