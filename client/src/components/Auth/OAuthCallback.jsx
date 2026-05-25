@@ -26,7 +26,7 @@ function OAuthCallback() {
 
     if (token) {
       loginWithToken(token);
-      navigate('/social', { replace: true });
+      navigate('/feed', { replace: true });
     } else {
       setError('No se recibio un token de autenticacion.');
       setTimeout(() => navigate('/login'), 3000);
