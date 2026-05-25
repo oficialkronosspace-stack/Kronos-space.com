@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+﻿import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -54,7 +54,7 @@ function PrivacyTab() {
               <div style={{ color: 'rgba(10,10,20,0.5)', fontSize: 12, marginTop: 2 }}>{item.desc}</div>
             </div>
             <button onClick={() => toggle(item.key)}
-              style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: settings[item.key] ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(255,255,255,0.1)', position: 'relative', transition: 'background 0.3s', flexShrink: 0 }}>
+              style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: settings[item.key] ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(10,10,20,0.12)', position: 'relative', transition: 'background 0.3s', flexShrink: 0 }}>
               <div style={{ position: 'absolute', top: 3, left: settings[item.key] ? 25 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'left 0.3s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }} />
             </button>
           </div>
@@ -99,7 +99,7 @@ function NotificationsTab() {
               <div style={{ color: '#0a0a14', fontSize: 14, fontWeight: 600 }}>{item.label}</div>
             </div>
             <button onClick={() => toggle(item.key)}
-              style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: prefs[item.key] ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(255,255,255,0.1)', position: 'relative', transition: 'background 0.3s', flexShrink: 0 }}>
+              style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: prefs[item.key] ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(10,10,20,0.12)', position: 'relative', transition: 'background 0.3s', flexShrink: 0 }}>
               <div style={{ position: 'absolute', top: 3, left: prefs[item.key] ? 25 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'left 0.3s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }} />
             </button>
           </div>
@@ -153,7 +153,7 @@ function AppearanceTab() {
             <div style={{ color: 'rgba(10,10,20,0.5)', fontSize: 12, marginTop: 2 }}>Transiciones y efectos visuales</div>
           </div>
           <button onClick={() => setAnimations(a => !a)}
-            style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: animations ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(255,255,255,0.1)', position: 'relative', transition: 'background 0.3s' }}>
+            style={{ width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', background: animations ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(10,10,20,0.12)', position: 'relative', transition: 'background 0.3s' }}>
             <div style={{ position: 'absolute', top: 3, left: animations ? 25 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'left 0.3s' }} />
           </button>
         </div>

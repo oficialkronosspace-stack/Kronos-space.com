@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { GlassCard, HoloText, BottomNav } from '../components/kronos';
 
@@ -371,7 +371,7 @@ export default function Health() {
                         transform: active ? 'scale(1.06)' : 'scale(1)',
                       }}>
                       <span style={{ fontSize: 22 }}>{m.emoji}</span>
-                      <span style={{ color: active ? '#fff' : 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: active ? 700 : 400 }}>
+                      <span style={{ color: active ? '#0a0a14' : 'rgba(10,10,20,0.5)', fontSize: 10, fontWeight: active ? 700 : 400 }}>
                         {m.label}
                       </span>
                     </button>

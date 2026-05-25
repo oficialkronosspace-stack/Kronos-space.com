@@ -22,8 +22,8 @@ function PostGrid({ posts, onLike }) {
           {post.image && (
             <img src={post.image} alt="" style={{ width: '100%', borderRadius: 12, marginBottom: 10, maxHeight: 320, objectFit: 'cover' }} />
           )}
-          <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, lineHeight: 1.55, marginBottom: 10 }}>{post.content}</div>
-          <div style={{ display: 'flex', gap: 16, color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>
+          <div style={{ color: '#0a0a14', fontSize: 14, lineHeight: 1.55, marginBottom: 10 }}>{post.content}</div>
+          <div style={{ display: 'flex', gap: 16, color: 'rgba(10,10,20,0.5)', fontSize: 12 }}>
             <span>❤️ {post.likes?.length || 0}</span>
             <span>💬 {post.comments?.length || 0}</span>
             <span style={{ marginLeft: 'auto' }}>{new Date(post.createdAt).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}</span>
@@ -196,13 +196,13 @@ function Profile() {
       <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 16px' }}>
         {/* Profile info */}
         <div style={{ paddingTop: 56, textAlign: 'center', marginBottom: 20 }}>
-          <div style={{ color: '#fff', fontSize: 20, fontWeight: 800, marginBottom: 2 }}>
+          <div style={{ color: '#0a0a14', fontSize: 20, fontWeight: 800, marginBottom: 2 }}>
             {profile.firstName || ''} {profile.lastName || ''}
             {profile.isVerified && <span style={{ marginLeft: 6, fontSize: 16 }}>✅</span>}
           </div>
-          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, marginBottom: 8 }}>@{profile.username}</div>
+          <div style={{ color: 'rgba(10,10,20,0.5)', fontSize: 13, marginBottom: 8 }}>@{profile.username}</div>
           {profile.bio && (
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, lineHeight: 1.5, maxWidth: 320, margin: '0 auto 12px' }}>{profile.bio}</div>
+            <div style={{ color: 'rgba(10,10,20,0.7)', fontSize: 13, lineHeight: 1.5, maxWidth: 320, margin: '0 auto 12px' }}>{profile.bio}</div>
           )}
 
           {/* Stats row */}
@@ -223,7 +223,7 @@ function Profile() {
           {!isOwnProfile && currentUser && (
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
               <button onClick={handleFollow}
-                style={{ padding: '9px 28px', borderRadius: 28, fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', background: isFollowing ? 'rgba(255,255,255,0.08)' : 'linear-gradient(135deg,#7c3aed,#06b6d4)', color: '#fff' }}>
+                style={{ padding: '9px 28px', borderRadius: 28, fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', background: isFollowing ? 'rgba(79,172,254,0.1)' : 'linear-gradient(135deg,#7c3aed,#06b6d4)', color: '#0a0a14' }}>
                 {isFollowing ? 'Siguiendo ✓' : 'Seguir'}
               </button>
               <button onClick={handleBlock} disabled={blockLoading}
@@ -234,7 +234,7 @@ function Profile() {
           )}
           {isOwnProfile && (
             <button onClick={() => navigate('/settings')}
-              style={{ padding: '9px 24px', borderRadius: 28, fontWeight: 700, fontSize: 13, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fff', cursor: 'pointer' }}>
+              style={{ padding: '9px 24px', borderRadius: 28, fontWeight: 700, fontSize: 13, border: '1px solid rgba(79,172,254,0.25)', background: 'transparent', color: '#0a0a14', cursor: 'pointer' }}>
               ✏️ Editar perfil
             </button>
           )}
@@ -247,7 +247,7 @@ function Profile() {
             ...(isOwnProfile ? [{ id: 'bookmarks', label: '🔖 Guardados' }] : []),
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
-              style={{ flex: 1, padding: '9px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', background: tab === t.id ? 'rgba(124,58,237,0.6)' : 'transparent', color: '#fff', transition: 'background 0.2s' }}>
+              style={{ flex: 1, padding: '9px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', background: tab === t.id ? 'rgba(124,58,237,0.6)' : 'transparent', color: '#0a0a14', transition: 'background 0.2s' }}>
               {t.label}
             </button>
           ))}

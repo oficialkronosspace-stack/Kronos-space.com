@@ -219,7 +219,7 @@ function HybridFeed() {
                 }}
               />
               {postText.length > 0 && (
-                <div style={{ textAlign: 'right', fontSize: 11, marginTop: 3, color: postText.length >= 280 ? '#ef4444' : postText.length > 260 ? '#f59e0b' : 'rgba(255,255,255,0.3)' }}>
+                <div style={{ textAlign: 'right', fontSize: 11, marginTop: 3, color: postText.length >= 280 ? '#ef4444' : postText.length > 260 ? '#f59e0b' : 'rgba(10,10,20,0.35)' }}>
                   {postText.length}/280
                 </div>
               )}
