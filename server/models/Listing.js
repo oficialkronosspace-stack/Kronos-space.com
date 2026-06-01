@@ -22,6 +22,8 @@ const listingSchema = new mongoose.Schema(
     escrow: {
       held: { type: Boolean, default: false },
       amount: { type: Number, default: 0 },
+      commission: { type: Number, default: 0 },      // plataforma retiene 7%
+      sellerReceives: { type: Number, default: 0 },  // vendedor recibe 93%
       releasedAt: { type: Date, default: null }
     }
   },

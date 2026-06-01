@@ -1,4 +1,6 @@
 const HealthLog = require('../models/HealthLog');
+const User = require('../models/User');
+const { addXpInternal } = require('./gamificationController');
 
 // Returns a Date at midnight (UTC) for a given date
 function startOfDay(d) {
@@ -70,6 +72,13 @@ exports.upsertLog = async (req, res) => {
       updateData,
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
+
+    // Acreditar tokens al wallet del usuario y otorgar XP en gamificación
+    if (earnTokens) {
+      await User.findByIdAndUpdate(req.user._id, { $inc: { kronosTokens: 10 } });
+      // addXpInternal también actualiza la racha de salud (health_logged)
+      await addXpInternal(req.user._id, 50, 'health_logged');
+    }
 
     res.json({ success: true, data: log, tokensAwarded: earnTokens ? 10 : 0 });
   } catch (err) {

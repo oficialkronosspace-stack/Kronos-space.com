@@ -77,6 +77,8 @@ const AvatarPage      = lazy(() => import('./pages/Avatar'));
 const VideoEditorPage = lazy(() => import('./pages/VideoEditor'));
 const EventsPage      = lazy(() => import('./pages/Events'));
 const GamificationPage = lazy(() => import('./pages/Gamification'));
+const Privacy         = lazy(() => import('./pages/Privacy'));
+const Terms           = lazy(() => import('./pages/Terms'));
 
 const LOADING = (
   <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -118,6 +120,8 @@ function App() {
             <Route path="/"                      element={<Welcome />} />
             <Route path="/mockups"               element={<KronosMockups />} />
             <Route path="/pricing"               element={<Pricing />} />
+            <Route path="/privacy"               element={<Privacy />} />
+            <Route path="/terms"                 element={<Terms />} />
             <Route path="/subscription/cancel"   element={<SubscriptionCancel />} />
             <Route path="/auth/login"            element={<Login />} />
             <Route path="/auth/register"         element={<Register />} />

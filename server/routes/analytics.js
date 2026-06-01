@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
+const { requireFeature } = require('../middleware/requireTier');
 const {
   getAttentionMetrics,
   createAttentionMetric,
@@ -8,11 +9,11 @@ const {
   createInteraction
 } = require('../controllers/analyticsController');
 
-// Todas las rutas de analytics requieren autenticacion
 router.use(protect);
 
-router.get('/attention', getAttentionMetrics);      // GET  /api/analytics/attention
-router.post('/attention', createAttentionMetric);   // POST /api/analytics/attention
-router.get('/interactions', getInteractions);       // GET  /api/analytics/interactions
+// Analytics avanzado requiere plan Business
+router.get('/attention',    requireFeature('advancedAnalytics'), getAttentionMetrics);
+router.post('/attention',   requireFeature('advancedAnalytics'), createAttentionMetric);
+router.get('/interactions', requireFeature('advancedAnalytics'), getInteractions);
 
 module.exports = router;

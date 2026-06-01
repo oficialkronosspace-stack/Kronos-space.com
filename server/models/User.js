@@ -116,7 +116,8 @@ const userSchema = new mongoose.Schema(
       prioritySupport: { type: Boolean, default: false },
       customShop: { type: Boolean, default: false }
     },
-    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    kronosTokens: { type: Number, default: 0, min: 0 }
   },
   { timestamps: true }
 );

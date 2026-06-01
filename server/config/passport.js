@@ -80,9 +80,9 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   );
   console.log('[Passport] Google OAuth strategy registered');
 } else {
-  console.warn(
-    '[Passport] Google OAuth NOT configured — set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env'
-  );
+  if (process.env.NODE_ENV !== 'development') {
+    console.warn('[Passport] Google OAuth NOT configured — set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env');
+  }
 }
 
 // ─── Facebook OAuth Strategy ──────────────────────────────────────────────
@@ -120,9 +120,9 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   );
   console.log('[Passport] Facebook OAuth strategy registered');
 } else {
-  console.warn(
-    '[Passport] Facebook OAuth NOT configured — set FACEBOOK_APP_ID and FACEBOOK_APP_SECRET in .env'
-  );
+  if (process.env.NODE_ENV !== 'development') {
+    console.warn('[Passport] Facebook OAuth NOT configured — set FACEBOOK_APP_ID and FACEBOOK_APP_SECRET in .env');
+  }
 }
 
 // Passport serialize/deserialize (needed even for stateless JWT usage)

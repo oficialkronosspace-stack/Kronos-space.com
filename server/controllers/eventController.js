@@ -1,5 +1,7 @@
 const { Event, Ticket } = require('../models/Event');
 const { createNotification } = require('./notificationController');
+const { stripe } = require('../config/stripe');
+const { ensureCustomer } = require('../services/subscriptionService');
 
 // GET /api/events — Listar eventos publicados (con filtros)
 exports.getEvents = async (req, res) => {
@@ -122,11 +124,12 @@ exports.cancelEvent = async (req, res) => {
   }
 };
 
-// POST /api/events/:id/buy-ticket — Comprar boleto
+// POST /api/events/:id/buy-ticket — Comprar boleto (gratis o Stripe)
 exports.buyTicket = async (req, res) => {
   try {
     const { ticketTypeId } = req.body;
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id)
+      .populate('organizer', 'username');
     if (!event) return res.status(404).json({ message: 'Evento no encontrado' });
     if (event.status !== 'published') return res.status(400).json({ message: 'Este evento no está disponible' });
 
@@ -135,36 +138,131 @@ exports.buyTicket = async (req, res) => {
     if (ticketType.sold >= ticketType.quantity)
       return res.status(400).json({ message: 'No hay boletos disponibles de este tipo' });
 
-    // Verificar que no tenga ya un boleto de este tipo
-    const existing = await Ticket.findOne({ event: event._id, ticketType: ticketTypeId, owner: req.user.id, status: 'active' });
+    const existing = await Ticket.findOne({
+      event: event._id, ticketType: ticketTypeId, owner: req.user.id, status: 'active'
+    });
     if (existing) return res.status(400).json({ message: 'Ya tienes un boleto para este evento' });
 
-    // Crear boleto
+    // ── BOLETO GRATUITO ─────────────────────────────────────────────────────
+    if (ticketType.price === 0) {
+      const ticket = new Ticket({
+        event: event._id,
+        ticketType: ticketTypeId,
+        owner: req.user.id,
+        price: 0,
+      });
+      await ticket.save();
+      ticketType.sold += 1;
+      await event.save({ validateBeforeSave: false });
+
+      createNotification({
+        recipient: event.organizer,
+        sender: req.user.id,
+        type: 'purchase',
+        title: 'Nuevo asistente',
+        body: `Alguien se registró a "${event.title}"`,
+        link: `/events/${event._id}`,
+      }).catch(() => {});
+
+      return res.status(201).json({ success: true, ticket, paymentRequired: false });
+    }
+
+    // ── BOLETO DE PAGO — crear sesión Stripe Checkout ────────────────────────
+    const User = require('../models/User');
+    const user = await User.findById(req.user.id);
+    const customerId = await ensureCustomer(user);
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      customer: customerId,
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            unit_amount: Math.round(ticketType.price * 100), // centavos
+            product_data: {
+              name: `${ticketType.name} — ${event.title}`,
+              description: ticketType.description || `Boleto para ${event.title}`,
+              images: event.coverImage ? [event.coverImage] : [],
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${clientUrl}/events/${event._id}?ticket_success=1&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${clientUrl}/events/${event._id}?ticket_cancelled=1`,
+      metadata: {
+        eventId: event._id.toString(),
+        ticketTypeId: ticketTypeId.toString(),
+        userId: req.user.id.toString(),
+        price: ticketType.price.toString(),
+      },
+    });
+
+    res.json({ success: true, paymentRequired: true, url: session.url, sessionId: session.id });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// POST /api/events/ticket-webhook — Confirmar boleto tras pago Stripe
+exports.ticketWebhookHandler = async (req, res) => {
+  const signature = req.headers['stripe-signature'];
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, signature, secret);
+  } catch (err) {
+    return res.status(400).json({ error: `Webhook signature: ${err.message}` });
+  }
+
+  if (event.type !== 'checkout.session.completed') {
+    return res.json({ received: true });
+  }
+
+  const session = event.data.object;
+  if (session.mode !== 'payment') return res.json({ received: true });
+
+  const { eventId, ticketTypeId, userId } = session.metadata || {};
+  if (!eventId || !ticketTypeId || !userId) return res.json({ received: true });
+
+  try {
+    const kronosEvent = await Event.findById(eventId);
+    if (!kronosEvent) return res.json({ received: true });
+
+    const ticketType = kronosEvent.ticketTypes.id(ticketTypeId);
+    if (!ticketType) return res.json({ received: true });
+
+    // Evitar duplicados si el webhook llega dos veces
+    const existing = await Ticket.findOne({ event: eventId, ticketType: ticketTypeId, owner: userId, status: 'active' });
+    if (existing) return res.json({ received: true, duplicate: true });
+
     const ticket = new Ticket({
-      event: event._id,
+      event: eventId,
       ticketType: ticketTypeId,
-      owner: req.user.id,
+      owner: userId,
       price: ticketType.price,
     });
     await ticket.save();
 
-    // Incrementar vendidos
     ticketType.sold += 1;
-    await event.save({ validateBeforeSave: false });
+    await kronosEvent.save({ validateBeforeSave: false });
 
-    // Notificar al organizador
     createNotification({
-      recipient: event.organizer,
-      sender: req.user.id,
+      recipient: kronosEvent.organizer,
+      sender: userId,
       type: 'purchase',
       title: 'Nuevo boleto vendido',
-      body: `Alguien compró un boleto para "${event.title}"`,
-      link: `/events/${event._id}`,
+      body: `Se compró un boleto para "${kronosEvent.title}"`,
+      link: `/events/${kronosEvent._id}`,
     }).catch(() => {});
 
-    res.status(201).json({ success: true, ticket });
+    res.json({ received: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('ticketWebhookHandler error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 

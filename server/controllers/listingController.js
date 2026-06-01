@@ -1,4 +1,7 @@
 const Listing = require('../models/Listing');
+const User = require('../models/User');
+
+const COMMISSION_RATE = 0.07; // 7% — dentro del rango 6-8%
 
 exports.getListings = async (req, res) => {
   try {
@@ -85,9 +88,12 @@ exports.buyListing = async (req, res) => {
       return res.status(400).json({ message: 'No puedes comprar tu propio listing' });
     }
 
+    const commission = Math.round(listing.price * COMMISSION_RATE * 100) / 100;
+    const sellerReceives = Math.round((listing.price - commission) * 100) / 100;
+
     listing.status = 'escrow';
     listing.buyer = req.user._id;
-    listing.escrow = { held: true, amount: listing.price, releasedAt: null };
+    listing.escrow = { held: true, amount: listing.price, commission, sellerReceives, releasedAt: null };
     await listing.save();
     await listing.populate('seller', 'username firstName lastName avatar');
     await listing.populate('buyer', 'username firstName lastName avatar');
@@ -114,7 +120,22 @@ exports.releaseFunds = async (req, res) => {
     listing.escrow.releasedAt = new Date();
     await listing.save();
 
-    res.json({ listing, message: 'Fondos liberados. Transacción completada.' });
+    // Acreditar al vendedor su parte neta en kronosTokens (wallet virtual)
+    const sellerNet = listing.escrow.sellerReceives || listing.price;
+    await User.findByIdAndUpdate(listing.seller, {
+      $inc: { kronosTokens: sellerNet }
+    });
+
+    res.json({
+      listing,
+      message: 'Fondos liberados. Transacción completada.',
+      breakdown: {
+        total: listing.escrow.amount,
+        commission: listing.escrow.commission,
+        sellerReceives: listing.escrow.sellerReceives,
+        commissionRate: `${COMMISSION_RATE * 100}%`
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

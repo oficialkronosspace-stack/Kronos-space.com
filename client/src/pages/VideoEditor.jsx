@@ -148,22 +148,76 @@ export default function VideoEditor() {
   const handleApplyTrim = () => {
     const start = parseFloat(trimStart);
     const end = parseFloat(trimEnd);
-    if (!videoRef.current) return;
-    if (!isNaN(start) && start >= 0) {
-      videoRef.current.currentTime = start;
-    }
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (!isNaN(start) && start >= 0) vid.currentTime = start;
     if (!isNaN(end) && end > 0 && end <= duration) {
-      // Use timeupdate to pause at end
       const onTime = () => {
-        if (videoRef.current && videoRef.current.currentTime >= end) {
-          videoRef.current.pause();
-          videoRef.current.removeEventListener('timeupdate', onTime);
+        if (vid.currentTime >= end) {
+          vid.pause();
+          vid.removeEventListener('timeupdate', onTime);
         }
       };
-      videoRef.current.addEventListener('timeupdate', onTime);
+      vid.addEventListener('timeupdate', onTime);
     }
-    videoRef.current.play();
-    showMsg(`Reproduciendo desde ${isNaN(start) ? 0 : start}s hasta ${isNaN(end) ? 'el final' : end + 's'}`);
+    vid.play();
+    showMsg(`Previsualizando: ${isNaN(start) ? 0 : start}s → ${isNaN(end) ? 'fin' : end + 's'}`);
+  };
+
+  const handleExportTrimmed = async () => {
+    const vid = videoRef.current;
+    if (!vid || !videoBlob) { showMsg('Carga un video primero', true); return; }
+    const start = parseFloat(trimStart) || 0;
+    const end   = parseFloat(trimEnd) || duration;
+    if (start >= end) { showMsg('El inicio debe ser menor que el fin', true); return; }
+    if (!window.MediaRecorder) { showMsg('Tu navegador no soporta exportación de video', true); return; }
+
+    showMsg('Exportando video recortado...');
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = vid.videoWidth  || 640;
+    canvas.height = vid.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : 'video/webm';
+    const stream   = canvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, { mimeType });
+    const chunks   = [];
+
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `kronos-trim-${Date.now()}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showMsg('Video recortado descargado!');
+    };
+
+    vid.muted       = true;
+    vid.currentTime = start;
+
+    await new Promise(resolve => { vid.onseeked = resolve; });
+
+    recorder.start(100);
+    vid.play();
+
+    const drawLoop = () => {
+      if (vid.ended || vid.currentTime >= end) {
+        vid.pause();
+        recorder.stop();
+        return;
+      }
+      ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(drawLoop);
+    };
+    drawLoop();
   };
 
   const handleDownload = () => {
@@ -587,10 +641,15 @@ export default function VideoEditor() {
                 >
                   Previsualizar
                 </button>
+                <button
+                  style={{ ...styles.btn(false, null), padding: '9px 18px', background: 'linear-gradient(135deg,#7c3aed,#06b6d4)', color: '#fff' }}
+                  onClick={handleExportTrimmed}
+                >
+                  ✂️ Exportar
+                </button>
               </div>
               <div style={{ fontSize: 11, color: 'rgba(10,10,20,0.35)', marginTop: 8 }}>
-                La exportacion con corte preciso requiere procesamiento en servidor (FFmpeg).
-                Esta herramienta navega al punto de inicio para previsualizar.
+                "Previsualizar" reproduce el segmento. "Exportar" descarga el video recortado (sin audio).
               </div>
             </GlassCard>
 

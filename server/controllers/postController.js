@@ -2,6 +2,7 @@ const Post = require('../models/Post');
 const User = require('../models/User');
 const UserBlock = require('../models/UserBlock');
 const { emitNotification } = require('../services/socketService');
+const aiService = require('../services/aiService');
 
 // Helper: IDs de usuarios bloqueados (en ambas direcciones)
 const getBlockedUserIds = async (userId) => {
@@ -24,6 +25,20 @@ const getBlockedUserIds = async (userId) => {
 exports.createPost = async (req, res) => {
   try {
     const { content, image, video, music, visibility } = req.body;
+
+    // Moderación IA: analizar contenido de texto antes de publicar
+    if (content && content.trim().length > 0) {
+      const moderation = await aiService.analyzeSentiment(content);
+      // Bloquear si toxicidad alta o marcado como no seguro
+      if (!moderation.safe || moderation.toxicity >= 0.75) {
+        return res.status(422).json({
+          success: false,
+          blocked: true,
+          reason: 'Tu publicación fue bloqueada por contener contenido inapropiado. Revísala y vuelve a intentarlo.',
+          toxicity: moderation.toxicity
+        });
+      }
+    }
 
     const post = new Post({
       author: req.user.id,

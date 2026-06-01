@@ -11,7 +11,6 @@ class AIService {
 
   init() {
     if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.startsWith('PENDIENTE')) {
-      console.warn('⚠️  OPENAI_API_KEY no configurada - features de AI deshabilitadas');
       return;
     }
     this.client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

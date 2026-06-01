@@ -12,8 +12,8 @@ const subscriptionService = require('../services/subscriptionService');
 router.post('/checkout', protect, async (req, res) => {
   try {
     const { tier } = req.body;
-    if (!['pro', 'business'].includes(tier)) {
-      return res.status(400).json({ error: 'Tier inválido. Usa "pro" o "business".' });
+    if (!['plus', 'pro', 'business'].includes(tier)) {
+      return res.status(400).json({ error: 'Tier inválido. Usa "plus", "pro" o "business".' });
     }
 
     const { url, sessionId } = await subscriptionService.createCheckoutSession(

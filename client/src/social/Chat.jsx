@@ -16,8 +16,12 @@ function Chat() {
   const [input, setInput] = useState('');
   const [socket, setSocket] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   const isAtBottom = () => {
     const el = containerRef.current;
@@ -70,6 +74,44 @@ function Chat() {
     socket?.emit('stopped_typing', { receiverId: userId, userId: user?._id || user?.id });
   };
 
+  const handleVoiceToggle = async () => {
+    if (isRecordingVoice) {
+      // Detener grabación
+      mediaRecorderRef.current?.stop();
+      setIsRecordingVoice(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunksRef.current = [];
+      const recorder = new MediaRecorder(stream);
+      recorder.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setIsTranscribing(true);
+        try {
+          const form = new FormData();
+          form.append('audio', blob, 'voice.webm');
+          const res = await axios.post(`${API_URL}/audio/transcribe`, form, {
+            headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('token')}` }
+          });
+          if (res.data.text) setInput(prev => prev + res.data.text);
+        } catch {
+          // transcripción falló silenciosamente
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecordingVoice(true);
+    } catch {
+      // Sin permiso de micrófono
+    }
+  };
+
   const myId = user?._id || user?.id;
 
   return (
@@ -114,22 +156,41 @@ function Chat() {
       </div>
 
       {/* Input */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: '#ffffff', borderTop: '1px solid rgba(79,172,254,0.12)', backdropFilter: 'blur(12px)', display: 'flex', gap: 10, alignItems: 'center' }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: '#ffffff', borderTop: '1px solid rgba(79,172,254,0.12)', backdropFilter: 'blur(12px)', display: 'flex', gap: 8, alignItems: 'center' }}>
+        {/* Micrófono — voz a texto */}
+        <button
+          onClick={handleVoiceToggle}
+          disabled={isTranscribing}
+          title={isRecordingVoice ? 'Detener grabación' : 'Grabar mensaje de voz'}
+          style={{
+            width: 42, height: 42, borderRadius: '50%', border: 'none', cursor: 'pointer', flexShrink: 0,
+            background: isRecordingVoice
+              ? 'linear-gradient(135deg,#ef4444,#dc2626)'
+              : 'rgba(79,172,254,0.1)',
+            fontSize: isTranscribing ? 12 : 18,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            animation: isRecordingVoice ? 'micPulse 1s ease-in-out infinite' : 'none',
+          }}
+        >
+          {isTranscribing ? '...' : isRecordingVoice ? '⏹' : '🎤'}
+        </button>
+
         <input
           value={input}
           onChange={e => { setInput(e.target.value); socket?.emit('typing', { receiverId: userId, userId: myId }); }}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
-          placeholder="Escribe un mensaje..."
+          placeholder={isRecordingVoice ? 'Grabando...' : 'Escribe un mensaje...'}
           style={{ flex: 1, background: 'rgba(79,172,254,0.07)', border: '1px solid rgba(79,172,254,0.2)', borderRadius: 24, padding: '10px 16px', color: '#0a0a14', fontSize: 14, outline: 'none', fontFamily: 'inherit' }}
         />
         <button
           onClick={handleSend}
           disabled={!input.trim()}
-          style={{ width: 42, height: 42, borderRadius: '50%', background: input.trim() ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(255,255,255,0.08)', border: 'none', color: '#0a0a14', fontSize: 18, cursor: input.trim() ? 'pointer' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ width: 42, height: 42, borderRadius: '50%', background: input.trim() ? 'linear-gradient(135deg,#7c3aed,#06b6d4)' : 'rgba(255,255,255,0.08)', border: 'none', color: '#0a0a14', fontSize: 18, cursor: input.trim() ? 'pointer' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
         >
           ➤
         </button>
       </div>
+      <style>{`@keyframes micPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }`}</style>
     </div>
   );
 }

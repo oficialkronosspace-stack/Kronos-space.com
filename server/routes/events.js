@@ -4,6 +4,7 @@ const { protect } = require('../middleware/auth');
 const {
   getEvents, getMyEvents, getEvent, createEvent, updateEvent, cancelEvent,
   buyTicket, getMyTicket, getMyTickets, checkIn, getAttendees,
+  ticketWebhookHandler,
 } = require('../controllers/eventController');
 
 // Públicas
@@ -23,3 +24,4 @@ router.post('/:id/checkin/:qr', checkIn);
 router.get('/:id/attendees',    getAttendees);
 
 module.exports = router;
+module.exports.ticketWebhookHandler = ticketWebhookHandler;

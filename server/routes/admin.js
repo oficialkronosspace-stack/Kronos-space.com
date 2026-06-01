@@ -10,21 +10,24 @@ catch { auth = (req, res, next) => next(); } // fallback dev
 const adminController = require('../controllers/adminController');
 
 // Dashboard / stats
-router.get('/stats', auth, requireAdmin, adminController.getStats || ((req, res) => res.json({ todo: 'implementar getStats' })));
+router.get('/stats', auth, requireAdmin, adminController.getStats);
 
 // Users
-router.get('/users', auth, requireAdmin, adminController.listUsers || ((req, res) => res.json({ todo: 'listUsers' })));
-router.patch('/users/:id/ban', auth, requireAdmin, adminController.banUser || ((req, res) => res.json({ todo: 'banUser' })));
-router.patch('/users/:id/unban', auth, requireAdmin, adminController.unbanUser || ((req, res) => res.json({ todo: 'unbanUser' })));
-router.delete('/users/:id', auth, requireAdmin, adminController.deleteUser || ((req, res) => res.json({ todo: 'deleteUser' })));
+router.get('/users',               auth, requireAdmin, adminController.listUsers);
+router.patch('/users/:id/ban',     auth, requireAdmin, adminController.banUser);
+router.patch('/users/:id/unban',   auth, requireAdmin, adminController.unbanUser);
+router.delete('/users/:id',        auth, requireAdmin, adminController.deleteUser);
 
 // Content moderation
-router.get('/posts', auth, requireAdmin, adminController.listPosts || ((req, res) => res.json({ todo: 'listPosts' })));
-router.delete('/posts/:id', auth, requireAdmin, adminController.deletePost || ((req, res) => res.json({ todo: 'deletePost' })));
+router.get('/posts',         auth, requireAdmin, adminController.listPosts);
+router.delete('/posts/:id',  auth, requireAdmin, adminController.deletePost);
 
 // Reports
-router.get('/reports', auth, requireAdmin, adminController.listReports || ((req, res) => res.json({ todo: 'listReports' })));
-router.patch('/reports/:id/resolve', auth, requireAdmin, adminController.resolveReport || ((req, res) => res.json({ todo: 'resolveReport' })));
+router.get('/reports',               auth, requireAdmin, adminController.listReports);
+router.patch('/reports/:id/resolve', auth, requireAdmin, adminController.resolveReport);
+
+// Subscriptions
+router.get('/subscriptions', auth, requireAdmin, adminController.listSubscriptions);
 
 // Push subscription endpoint (cualquier usuario autenticado)
 router.post('/push/subscribe', auth, async (req, res) => {

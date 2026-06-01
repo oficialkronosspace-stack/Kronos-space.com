@@ -25,6 +25,27 @@ const TIERS = [
     cta: null
   },
   {
+    id: 'plus',
+    name: 'Plus',
+    price: '$4.99',
+    cadence: 'al mes',
+    accent: 'linear-gradient(135deg, rgba(234,179,8,0.14), rgba(251,146,60,0.10))',
+    border: 'rgba(234,179,8,0.38)',
+    features: [
+      { label: '20 posts por día', ok: true },
+      { label: 'Sin anuncios', ok: true },
+      { label: 'Stickers premium', ok: true },
+      { label: 'Recompensa diaria 2× mayor', ok: true },
+      { label: 'Soporte por correo', ok: true },
+      { label: 'IA generativa', ok: false },
+      { label: 'Badge verificado ✓', ok: false },
+      { label: 'Posts ilimitados', ok: false },
+      { label: 'Analytics avanzado', ok: false },
+      { label: 'API access', ok: false }
+    ],
+    cta: 'Suscribirme a Plus'
+  },
+  {
     id: 'pro',
     name: 'Pro',
     price: '$9.99',
@@ -183,7 +204,9 @@ const TierCard = ({ tier, currentTier, onSelect, busy }) => {
               cursor: busy ? 'wait' : 'pointer',
               background: isHighlighted
                 ? 'linear-gradient(135deg, #7c3aed, #06b6d4)'
-                : 'linear-gradient(135deg, #3b82f6, #1e40af)',
+                : tier.id === 'plus'
+                  ? 'linear-gradient(135deg, #eab308, #f97316)'
+                  : 'linear-gradient(135deg, #3b82f6, #1e40af)',
               color: '#fff',
               fontWeight: 700,
               fontSize: 14,

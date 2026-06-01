@@ -3,13 +3,47 @@ const { Gamification, BADGES } = require('../models/Gamification');
 // ── Helper: obtener o crear perfil ──
 async function getOrCreate(userId) {
   let g = await Gamification.findOne({ user: userId });
-  if (!g) {
-    g = await Gamification.create({ user: userId });
-  }
+  if (!g) g = await Gamification.create({ user: userId });
   return g;
 }
 
-// ── Función interna: añadir XP y verificar nivel + badges ──
+// ── Helper: incrementar racha (login | posting | health) ──
+// Retorna el nuevo conteo de la racha
+function updateStreak(g, type) {
+  const streak = g.streaks[type];
+  if (!streak) return 0;
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  if (!streak.lastDate) {
+    streak.count   = 1;
+    streak.lastDate = today;
+    return 1;
+  }
+
+  const last = new Date(streak.lastDate);
+  last.setUTCHours(0, 0, 0, 0);
+  const diffDays = Math.round((today - last) / 86_400_000);
+
+  if (diffDays === 0) {
+    return streak.count; // ya actualizado hoy
+  } else if (diffDays === 1) {
+    streak.count++;
+  } else {
+    streak.count = 1; // racha rota
+  }
+  streak.lastDate = today;
+  return streak.count;
+}
+
+// Mapa: acción → tipo de racha a actualizar
+const ACTION_STREAK_MAP = {
+  post_created:  'posting',
+  health_logged: 'health',
+};
+
+// ── Función interna: añadir XP, actualizar racha y verificar nivel + badges ──
 async function addXpInternal(userId, amount, action) {
   const g = await getOrCreate(userId);
   g.xp += amount;
@@ -18,18 +52,25 @@ async function addXpInternal(userId, amount, action) {
   const leveledUp = newLevel > g.level;
   g.level = newLevel;
 
+  // Actualizar racha según la acción
+  const streakType = ACTION_STREAK_MAP[action];
+  let streakCount = 0;
+  if (streakType) {
+    streakCount = updateStreak(g, streakType);
+  }
+
   // Verificar badges automáticos según acción
   const badgesToCheck = {
-    post_created:    ['primer_post'],
-    follow_user:     ['social_starter'],
-    order_placed:    ['comprador'],
-    message_sent:    ['chateador'],
-    comment_created: ['comentarista'],
-    review_left:     ['reseñista'],
-    health_logged:   ['saludable'],
-    wallet_used:     ['wallet_user'],
-    ticket_bought:   ['event_goer'],
-    live_started:    ['streamer'],
+    post_created:      ['primer_post'],
+    follow_user:       ['social_starter'],
+    order_placed:      ['comprador'],
+    message_sent:      ['chateador'],
+    comment_created:   ['comentarista'],
+    review_left:       ['reseñista'],
+    health_logged:     ['saludable'],
+    wallet_used:       ['wallet_user'],
+    ticket_bought:     ['event_goer'],
+    live_started:      ['streamer'],
     community_created: ['comunero'],
     marketplace_sold:  ['trader'],
   };
@@ -49,6 +90,13 @@ async function addXpInternal(userId, amount, action) {
     }
   }
 
+  // Badge 'maratonista' — 30 días de racha de salud
+  if (streakType === 'health' && streakCount >= 30 && !g.badges.includes('maratonista')) {
+    g.badges.push('maratonista');
+    const badge = BADGES.find(b => b.id === 'maratonista');
+    if (badge) { g.xp += badge.xpReward; g.totalXpEarned += badge.xpReward; newBadges.push(badge); }
+  }
+
   // Badge de nivel 50
   if (g.level >= 50 && !g.badges.includes('kronos_legend')) {
     g.badges.push('kronos_legend');
@@ -59,7 +107,7 @@ async function addXpInternal(userId, amount, action) {
 
   g.level = Gamification.xpToLevel(g.xp);
   await g.save();
-  return { g, leveledUp, newBadges };
+  return { g, leveledUp, newBadges, streakCount };
 }
 
 // POST /api/gamification/add-xp — Añadir XP (uso interno desde otros controladores)
@@ -151,6 +199,23 @@ exports.getAllBadges = async (req, res) => {
         earned: g.badges.includes(b.id),
       })),
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// POST /api/gamification/login-streak — Registrar login diario y actualizar racha
+exports.recordLoginStreak = async (req, res) => {
+  try {
+    const g = await getOrCreate(req.user.id);
+    const count = updateStreak(g, 'login');
+    // XP bonus por racha de login
+    const xpBonus = count > 1 ? Math.min(count * 5, 50) : 5;
+    g.xp += xpBonus;
+    g.totalXpEarned += xpBonus;
+    g.level = Gamification.xpToLevel(g.xp);
+    await g.save();
+    res.json({ success: true, loginStreak: count, xpGained: xpBonus });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

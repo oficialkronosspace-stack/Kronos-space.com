@@ -24,16 +24,11 @@ function _configure() {
   return true;
 }
 
-if (!_isConfigured()) {
-  console.warn('⚠️  Web Push no configurado - notificaciones push no seran enviadas (modo dev)');
-}
+// Web Push es opcional — sin VAPID keys las notificaciones push simplemente se omiten
 
 exports.sendPush = async (userId, payload) => {
   try {
-    if (!_configure()) {
-      console.warn(`⚠️  Push no configurado - skip notif a ${userId}`);
-      return false;
-    }
+    if (!_configure()) return false;
 
     const user = await User.findById(userId).select('pushSubscription');
     if (!user?.pushSubscription?.endpoint) return false;

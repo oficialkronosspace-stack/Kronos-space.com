@@ -78,21 +78,48 @@ app.use('/api/auth', authLimiter);
 
 // =============================================================
 
-// Middleware
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  'http://localhost:3000',
-  /\.vercel\.app$/,
-].filter(Boolean);
-app.use(cors({ origin: allowedOrigins }));
+// CORS — producción + desarrollo
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Peticiones sin origin (apps móviles, Postman, server-to-server)
+    if (!origin) return callback(null, true);
 
-// ── Stripe webhook: necesita el body en raw ANTES de express.json() ──
-// Si el JSON parser corre primero, la firma de Stripe no se puede verificar.
+    const whitelist = [
+      process.env.CLIENT_URL,
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ].filter(Boolean);
+
+    const isVercel = /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin);
+
+    if (whitelist.includes(origin) || isVercel) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origen no permitido — ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id'],
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Pre-flight para todas las rutas
+
+// ── Stripe webhooks: necesitan el body en raw ANTES de express.json() ──
 const subscriptionRoutes = require('./routes/subscription');
 app.post(
   '/api/subscription/webhook',
   express.raw({ type: 'application/json' }),
   subscriptionRoutes.webhookHandler
+);
+
+const eventsRoutes = require('./routes/events');
+app.post(
+  '/api/events/ticket-webhook',
+  express.raw({ type: 'application/json' }),
+  eventsRoutes.ticketWebhookHandler
 );
 
 app.use(express.json());
@@ -137,7 +164,10 @@ app.use('/api/notifications', require('./routes/notifications')); // Centro de n
 app.use('/api/avatar', require('./routes/avatar')); // Avatar 3D Customizable + Tienda
 app.use('/api/subscription', subscriptionRoutes); // Kronos Pro / Suscripciones (Stripe)
 app.use('/api/reservations', require('./routes/reservations'));
-app.use('/api/events',        require('./routes/events'));
+app.use('/api/events',        eventsRoutes);
+app.use('/api/audio',         require('./routes/audio'));       // Audio Rooms
+app.use('/api/translation',   require('./routes/translation')); // Traducción IA
+app.use('/api/ar',            require('./routes/ar'));           // Realidad Aumentada
 app.use('/api/gamification',  require('./routes/gamification')); // Reservaciones
 app.use('/api/health', require('./routes/health')); // Health & Fitness
 
@@ -362,6 +392,38 @@ io.on('connection', (socket) => {
     io.to(`stream_${streamerId}`).emit('stream_chat', { username, message, at: new Date() });
   });
 
+  // ============= SOCKET.IO - AUDIO ROOMS =============
+
+  socket.on('join_audio_room', ({ roomId, userId, username, avatar }) => {
+    socket.join(`audio_${roomId}`);
+    socket.audioRoomId = roomId;
+    socket.audioUserId = userId;
+
+    io.to(`audio_${roomId}`).emit('audio_room_user_joined', {
+      userId, username, avatar, muted: false, spatialX: 0, spatialY: 0
+    });
+
+    // Notificar al que se une quiénes están en la sala
+    const room = io.sockets.adapter.rooms.get(`audio_${roomId}`);
+    socket.emit('audio_room_state', {
+      roomId,
+      participantCount: room ? room.size : 1
+    });
+  });
+
+  socket.on('leave_audio_room', ({ roomId, userId }) => {
+    socket.leave(`audio_${roomId}`);
+    io.to(`audio_${roomId}`).emit('audio_room_user_left', { userId, roomId });
+  });
+
+  socket.on('toggle_audio_mute', ({ roomId, userId, muted }) => {
+    io.to(`audio_${roomId}`).emit('audio_room_mute_changed', { userId, muted });
+  });
+
+  socket.on('update_spatial_position', ({ roomId, userId, x, y }) => {
+    socket.to(`audio_${roomId}`).emit('audio_room_spatial_update', { userId, x, y });
+  });
+
   // Desconexión
   socket.on('disconnect', () => {
     socketService.setUserOffline(socket.id);
@@ -444,11 +506,19 @@ if (process.env.NODE_ENV !== 'test') {
 
 // Iniciar servidor
 const PORT = process.env.PORT || 5000;
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n[ERROR] Puerto ${PORT} ya está en uso. Cierra el proceso anterior y vuelve a intentar.\n`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
+});
 server.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║  🚀 Super-App Server Running          ║`);
-  console.log(`║  Port: ${PORT}`);
-  console.log(`║  URL: http://localhost:${PORT}`);
+  console.log(`║  Port: ${PORT}                              ║`);
+  console.log(`║  URL: http://localhost:${PORT}              ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
 });
 

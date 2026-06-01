@@ -14,6 +14,17 @@ const TIER_FEATURES = {
     prioritySupport: false,
     customShop: false
   },
+  plus: {
+    unlimitedPosts: false,
+    aiGenerator: false,
+    noAds: true,
+    verifiedBadge: false,
+    premiumStickers: true,
+    advancedAnalytics: false,
+    apiAccess: false,
+    prioritySupport: false,
+    customShop: false
+  },
   pro: {
     unlimitedPosts: true,
     aiGenerator: true,
@@ -39,6 +50,7 @@ const TIER_FEATURES = {
 };
 
 const PRICE_ID_BY_TIER = {
+  plus: () => process.env.STRIPE_PLUS_PRICE_ID,
   pro: () => process.env.STRIPE_PRO_PRICE_ID,
   business: () => process.env.STRIPE_BUSINESS_PRICE_ID
 };
@@ -210,6 +222,50 @@ const handleSubscriptionWebhook = async (event) => {
 
       stored.status = 'past_due';
       await stored.save();
+      break;
+    }
+
+    case 'invoice.payment_succeeded': {
+      const invoice = event.data.object;
+      const subId = invoice.subscription;
+      if (!subId) break;
+
+      const stored = await Subscription.findOne({ stripeSubscriptionId: subId });
+      if (!stored) break;
+
+      // Renovación exitosa — asegurar que el tier sigue activo
+      if (stored.status === 'past_due' || stored.status !== 'active') {
+        stored.status = 'active';
+        await stored.save();
+        await syncFeatures(stored.userId, stored.tier);
+      }
+      break;
+    }
+
+    case 'charge.refunded': {
+      const charge = event.data.object;
+      // Reembolso de cargo único — registrar en subscription si aplica
+      const subId = charge.metadata?.subscriptionId || null;
+      if (subId) {
+        const stored = await Subscription.findOne({ stripeSubscriptionId: subId });
+        if (stored) {
+          stored.status = 'canceled';
+          stored.canceledAt = new Date();
+          await stored.save();
+          await syncFeatures(stored.userId, 'free');
+        }
+      }
+      break;
+    }
+
+    case 'payment_intent.succeeded': {
+      // Pago único exitoso (checkout de orden, no suscripción)
+      // Aquí solo lo registramos — cada módulo (orders, marketplace) maneja su propio flujo
+      break;
+    }
+
+    case 'customer.subscription.trial_will_end': {
+      // 3 días antes de que termine el trial — notificación futura
       break;
     }
 
