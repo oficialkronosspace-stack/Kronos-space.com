@@ -40,8 +40,15 @@ app.get('/api/health', (req, res) => {
 // Socket.io con CORS
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST']
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed = [process.env.CLIENT_URL, 'http://localhost:3000', 'http://localhost:3001'].filter(Boolean);
+      const isVercel = /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin);
+      if (allowed.includes(origin) || isVercel) return callback(null, true);
+      callback(new Error('Socket CORS: origen no permitido'));
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
@@ -66,15 +73,15 @@ const generalLimiter = rateLimit({
 });
 app.use(generalLimiter);
 
-// Auth-specific rate limit: 10 requests per hour (brute-force protection)
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 10,
+// Auth-specific rate limit: solo en login (brute-force protection)
+const authLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Demasiados intentos. Espera una hora e intenta de nuevo.' }
+  message: { message: 'Demasiados intentos de login. Espera 15 minutos.' }
 });
-app.use('/api/auth', authLimiter);
+app.use('/api/auth/login', authLoginLimiter);
 
 // =============================================================
 
