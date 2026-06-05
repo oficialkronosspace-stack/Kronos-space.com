@@ -1,5 +1,6 @@
-const CACHE_NAME = 'kronos-v1';
-const STATIC_ASSETS = ['/', '/index.html', '/manifest.json'];
+// IMPORTANTE: subir esta versión en cada cambio de estrategia purga la caché vieja.
+const CACHE_NAME = 'kronos-v2';
+const STATIC_ASSETS = ['/manifest.json'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -9,19 +10,50 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
+  // Borra TODAS las cachés que no sean la actual (elimina el index.html viejo).
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  if (event.request.url.includes('/api/')) return;
+  const url = new URL(event.request.url);
+  if (url.pathname.startsWith('/api/')) return;
+
+  // Navegaciones (HTML): NETWORK-FIRST. Nunca servir un index.html cacheado que
+  // apunte a bundles JS que ya no existen (la causa de la pantalla blanca tras deploy).
+  // Solo se usa la copia cacheada si no hay red (offline).
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put('/index.html', copy));
+          return res;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
+  // Resto de assets (JS/CSS con hash en el nombre = inmutables): cache-first con
+  // actualización en segundo plano.
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    caches.match(event.request).then((cached) => {
+      const network = fetch(event.request)
+        .then((res) => {
+          if (res && res.status === 200 && res.type === 'basic') {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
+          }
+          return res;
+        })
+        .catch(() => cached);
+      return cached || network;
+    })
   );
 });
 
