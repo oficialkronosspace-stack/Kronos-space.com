@@ -5,6 +5,7 @@
  *
  * Usage:
  *   node agents/orchestrator.js              → full cycle
+ *   node agents/orchestrator.js --audit      → only run Kairos (auditoría experta)
  *   node agents/orchestrator.js --plan       → only generate tasks (Task Master)
  *   node agents/orchestrator.js --build      → only run Builder Alpha
  *   node agents/orchestrator.js --fix        → only run Pelos
@@ -79,6 +80,17 @@ async function runCycle(options = {}) {
 
   printBanner('KRONOS AGENT ORCHESTRATOR');
   log(`Mode: ${runAll ? 'ALL' : 'SINGLE CYCLE'} | DryRun: ${dryRun}`);
+
+  // ── Step 0: Kairos — auditoría experta (qué falta para estar en la web) ───
+  log('');
+  log('STEP 0: Kairos — auditando proyecto y encolando gaps de producción...');
+  try {
+    const { run: runKairos } = require('./kairos');
+    runKairos({ reportOnly: dryRun, fix: !dryRun });
+    log('Kairos completado');
+  } catch (err) {
+    log(`Kairos ERROR: ${err.message}`);
+  }
 
   // ── Step 1: Task Master ──────────────────────────────────────────────────
   log('');
@@ -177,6 +189,13 @@ const args = process.argv.slice(2);
 
 if (args.includes('--status')) {
   showStatus();
+  process.exit(0);
+}
+
+if (args.includes('--audit')) {
+  log('Running Kairos only...');
+  const { run } = require('./kairos');
+  run({ reportOnly: args.includes('--dry'), fix: args.includes('--fix') });
   process.exit(0);
 }
 
