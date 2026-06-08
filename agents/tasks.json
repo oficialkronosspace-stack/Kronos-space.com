@@ -1,695 +1,695 @@
 [
-    {
-        "id":  "sec-input-sanitize",
-        "type":  "security",
-        "priority":  1,
-        "title":  "Sanitizar inputs con express-mongo-sanitize",
-        "description":  "Prevenir inyecciones NoSQL agregando express-mongo-sanitize antes de los routers en server.js.",
-        "files":  [
-                      "server/server.js"
-                  ],
-        "acceptance":  [
-                           "npm install express-mongo-sanitize instalado",
-                           "app.use(mongoSanitize()) registrado antes de las rutas",
-                           "Payload con $where en body es bloqueado"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  0.5,
-        "updatedAt":  "2026-05-20T04:43:03.748Z"
-    },
-    {
-        "id":  "api-rate-limit",
-        "type":  "security",
-        "priority":  1,
-        "title":  "Rate limiting por endpoint sensible",
-        "description":  "Aplicar express-rate-limit en /auth/login, /wallet/transfer y /wallet/deposit para prevenir fuerza bruta y abuso.",
-        "files":  [
-                      "server/middleware/rateLimit.js",
-                      "server/routes/auth.js",
-                      "server/routes/wallet.js"
-                  ],
-        "acceptance":  [
-                           "Login bloqueado tras 10 intentos en 15 min",
-                           "Transfer/deposit bloqueado tras 20 req/min",
-                           "Response 429 con Retry-After header"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  1,
-        "updatedAt":  "2026-05-20T04:43:05.040Z"
-    },
-    {
-        "id":  "ui-loading-skeleton",
-        "type":  "feature",
-        "priority":  1,
-        "title":  "Agregar skeletons de carga en Feed, Wallet y Communities",
-        "description":  "Reemplazar el spinner genérico con componentes Skeleton que imiten el layout real de cada página, mejorando la percepción de velocidad.",
-        "files":  [
-                      "client/src/pages/Feed.jsx",
-                      "client/src/pages/Wallet.jsx",
-                      "client/src/pages/Communities.jsx",
-                      "client/src/components/kronos/Skeleton.jsx"
-                  ],
-        "acceptance":  [
-                           "Skeleton visible durante fetch inicial",
-                           "Skeleton respeta el grid de la página",
-                           "Desaparece suavemente con fade-in cuando llegan los datos"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  1,
-        "updatedAt":  "2026-05-20T04:42:51.846Z"
-    },
-    {
-        "id":  "ui-notif-in-navbar",
-        "type":  "feature",
-        "priority":  1,
-        "title":  "Integrar NotificationCenter en Navbar",
-        "description":  "Reemplazar el ícono de campana estático del Navbar con el componente NotificationCenter ya creado.",
-        "files":  [
-                      "client/src/components/Navbar.jsx"
-                  ],
-        "acceptance":  [
-                           "Campana en Navbar muestra badge de no leídas y abre panel al click"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  1,
-        "updatedAt":  "2026-05-20T04:42:52.242Z"
-    },
-    {
-        "id":  "ui-skeleton-wallet",
-        "type":  "improvement",
-        "priority":  1,
-        "title":  "Aplicar SkeletonWalletCard en Wallet mientras carga",
-        "description":  "Usar el componente SkeletonWalletCard ya creado para reemplazar el spinner de carga en la página Wallet.",
-        "files":  [
-                      "client/src/pages/Wallet.jsx"
-                  ],
-        "acceptance":  [
-                           "Skeleton visible en lugar de spinner al cargar la wallet"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  1,
-        "updatedAt":  "2026-05-20T04:42:52.736Z"
-    },
-    {
-        "id":  "sec-xss-clean",
-        "type":  "security",
-        "priority":  2,
-        "title":  "Protección XSS con xss-clean",
-        "description":  "Sanitizar HTML en todos los inputs del usuario antes de guardar en la DB usando el middleware xss-clean.",
-        "files":  [
-                      "server/server.js"
-                  ],
-        "acceptance":  [
-                           "npm install xss-clean instalado",
-                           "app.use(xss()) registrado en server.js"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  1.5,
-        "updatedAt":  "2026-05-20T04:43:06.322Z"
-    },
-    {
-        "id":  "ui-dark-empty-states",
-        "type":  "feature",
-        "priority":  2,
-        "title":  "Empty states con ilustración en Feed, Chat y Wallet",
-        "description":  "Cuando no hay datos mostrar un estado vacío con icono SVG, mensaje y CTA en lugar de una pantalla en blanco.",
-        "files":  [
-                      "client/src/components/kronos/EmptyState.jsx",
-                      "client/src/pages/Feed.jsx",
-                      "client/src/social/ConversationList.jsx",
-                      "client/src/pages/Wallet.jsx"
-                  ],
-        "acceptance":  [
-                           "Componente EmptyState reutilizable con props icon, title, subtitle, ctaLabel, ctaHref",
-                           "Usado en al menos 3 páginas"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  2,
-        "updatedAt":  "2026-05-20T04:42:53.320Z"
-    },
-    {
-        "id":  "feat-notifications-center",
-        "type":  "feature",
-        "priority":  2,
-        "title":  "Centro de notificaciones en tiempo real",
-        "description":  "Panel de notificaciones (likes, comentarios, mensajes, transferencias) con badge de conteo no leídas en Navbar, usando Socket.io ya existente.",
-        "files":  [
-                      "client/src/components/NotificationCenter.jsx",
-                      "client/src/components/Navbar.jsx",
-                      "server/models/Notification.js",
-                      "server/controllers/notificationController.js",
-                      "server/routes/notifications.js"
-                  ],
-        "acceptance":  [
-                           "Badge con número en icono de campana",
-                           "Panel slide-in con lista de notificaciones",
-                           "Marcar como leída al hacer click",
-                           "Socket event: notification_new"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  2,
-        "updatedAt":  "2026-05-20T04:42:54.389Z"
-    },
-    {
-        "id":  "feat-follow-suggestions",
-        "type":  "feature",
-        "priority":  2,
-        "title":  "Panel \"A quién seguir\" en el Feed",
-        "description":  "Sidebar o card horizontal con sugerencias de usuarios a seguir basadas en comunidades en común.",
-        "files":  [
-                      "client/src/components/FollowSuggestions.jsx",
-                      "server/controllers/userController.js",
-                      "server/routes/users.js"
-                  ],
-        "acceptance":  [
-                           "GET /api/users/suggestions devuelve hasta 5 usuarios",
-                           "Card con avatar, nombre y botón Seguir",
-                           "Se actualiza al seguir a alguien"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  2,
-        "updatedAt":  "2026-05-20T04:42:54.679Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "ui-skeleton-communities",
-        "type":  "improvement",
-        "priority":  2,
-        "title":  "Aplicar SkeletonList en Communities y Feed mientras cargan",
-        "description":  "Usar SkeletonList ya creado en Communities.jsx y en el spinner inicial del HybridFeed.",
-        "files":  [
-                      "client/src/pages/Communities.jsx",
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "acceptance":  [
-                           "Skeletons visibles en ambas páginas durante carga inicial"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  2,
-        "updatedAt":  "2026-05-20T04:42:55.063Z"
-    },
-    {
-        "id":  "api-compress-responses",
-        "type":  "improvement",
-        "priority":  2,
-        "title":  "Compresión gzip/brotli en respuestas del servidor",
-        "description":  "Agregar el middleware compression de Express para reducir el tamaño de las respuestas JSON y HTML en producción.",
-        "files":  [
-                      "server/server.js"
-                  ],
-        "acceptance":  [
-                           "npm install compression instalado en /server",
-                           "Respuestas con Content-Encoding: gzip para clientes que lo soporten"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  2,
-        "updatedAt":  "2026-05-20T04:42:55.449Z"
-    },
-    {
-        "id":  "feat-wallet-qr",
-        "type":  "feature",
-        "priority":  3,
-        "title":  "QR de pago en Wallet",
-        "description":  "Generar un código QR único por usuario para recibir pagos/transferencias sin necesidad de buscar por username.",
-        "files":  [
-                      "client/src/pages/Wallet.jsx",
-                      "client/src/components/kronos/QRCode.jsx"
-                  ],
-        "acceptance":  [
-                           "QR visible en tab \"wallet\"",
-                           "QR contiene deeplink kronos://pay/\u003cuserId\u003e",
-                           "Botón de descargar QR como imagen"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  3,
-        "updatedAt":  "2026-05-20T04:42:56.010Z"
-    },
-    {
-        "id":  "ui-post-image-upload",
-        "type":  "feature",
-        "priority":  3,
-        "title":  "Subir imagen al crear post en el Feed",
-        "description":  "Agregar botón de adjuntar imagen al composer del HybridFeed, con preview y upload a Cloudinary.",
-        "files":  [
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "acceptance":  [
-                           "Botón 📷 en el composer abre file picker",
-                           "Preview de la imagen antes de publicar",
-                           "Imagen incluida en el post al publicar"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  3,
-        "updatedAt":  "2026-05-20T04:42:56.323Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "feat-token-daily-reward",
-        "type":  "feature",
-        "priority":  3,
-        "title":  "Sistema de Daily Rewards en Tokens (check-in diario)",
-        "description":  "Permitir al usuario reclamar tokens una vez por día. Muestra racha de días consecutivos y recompensa escalada.",
-        "files":  [
-                      "client/src/pages/Wallet.jsx",
-                      "server/controllers/walletController.js",
-                      "server/routes/wallet.js"
-                  ],
-        "acceptance":  [
-                           "GET /api/wallet/daily-reward — devuelve { claimed, streakDays, reward }",
-                           "POST /api/wallet/daily-reward — reclama la recompensa del día",
-                           "UI en tab \"kro\" muestra estado del daily reward y racha"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  3,
-        "updatedAt":  "2026-05-20T04:42:56.914Z"
-    },
-    {
-        "id":  "ui-toast-system",
-        "type":  "improvement",
-        "priority":  3,
-        "title":  "Unificar sistema de notificaciones toast",
-        "description":  "Centralizar todos los toast/alert en un solo helper useToast() que use react-hot-toast ya instalado. Eliminar console.log de errores visibles al usuario.",
-        "files":  [
-                      "client/src/hooks/useToast.js",
-                      "client/src/pages/Wallet.jsx",
-                      "client/src/pages/Communities.jsx",
-                      "client/src/pages/Live.jsx"
-                  ],
-        "acceptance":  [
-                           "Hook useToast exportado desde hooks/",
-                           "No hay alert() nativo en el código",
-                           "Errores de API muestran mensaje al usuario vía toast"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  3,
-        "updatedAt":  "2026-05-20T04:42:57.378Z"
-    },
-    {
-        "id":  "perf-virtual-list",
-        "type":  "improvement",
-        "priority":  4,
-        "title":  "Virtualizar lista del Feed para manejar 1000+ posts",
-        "description":  "Usar react-window o la API nativa de Intersection Observer para renderizar solo los posts visibles y reducir DOM nodes.",
-        "files":  [
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "acceptance":  [
-                           "Feed con 200+ posts no causa jank",
-                           "Memory usage no crece linealmente con el scroll"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  4,
-        "updatedAt":  "2026-05-20T04:42:57.693Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "api-morgan-logging",
-        "type":  "improvement",
-        "priority":  4,
-        "title":  "Request logging con Morgan en el servidor",
-        "description":  "Agregar Morgan en modo \"dev\" para desarrollo y \"combined\" para producción. Redirigir logs a archivo en prod.",
-        "files":  [
-                      "server/server.js"
-                  ],
-        "acceptance":  [
-                           "npm install morgan instalado",
-                           "Logs de requests visibles en consola en desarrollo"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  4,
-        "updatedAt":  "2026-05-20T04:42:57.985Z"
-    },
-    {
-        "id":  "test-wallet-unit",
-        "type":  "test",
-        "priority":  4,
-        "title":  "Unit tests del walletController (transfer, deposit, getWallet)",
-        "description":  "Tests unitarios con Jest que mockean MongoDB y verifican la lógica de negocio del wallet.",
-        "files":  [
-                      "server/tests/wallet.test.js"
-                  ],
-        "acceptance":  [
-                           "Transfer entre usuarios actualiza ambos balances",
-                           "Deposit incrementa balance",
-                           "Transfer con balance insuficiente retorna 400"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  4,
-        "updatedAt":  "2026-05-20T04:43:07.477Z"
-    },
-    {
-        "id":  "feat-trending-hashtags",
-        "type":  "feature",
-        "priority":  5,
-        "title":  "Hashtags clicables en posts con trending sidebar",
-        "description":  "Detectar #hashtags en el contenido de posts, convertirlos en links y mostrar un panel de trending en el Feed.",
-        "files":  [
-                      "client/src/components/HashtagText.jsx",
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "acceptance":  [
-                           "Componente HashtagText parsea #word y los convierte en spans clicables",
-                           "Click en hashtag filtra el feed por ese tag"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  4.5,
-        "updatedAt":  "2026-05-20T04:42:58.633Z"
-    },
-    {
-        "id":  "perf-image-lazy",
-        "type":  "improvement",
-        "priority":  5,
-        "title":  "Lazy loading nativo en todas las imágenes",
-        "description":  "Agregar loading=\"lazy\" y placeholder blur en todos los \u003cimg\u003e del proyecto. Usar Cloudinary URL transformations para servir WebP y tamaños correctos.",
-        "files":  [
-                      "client/src/components/kronos/KronosImage.jsx",
-                      "client/src/social/Feed.jsx",
-                      "client/src/pages/Communities.jsx"
-                  ],
-        "acceptance":  [
-                           "Componente KronosImage centraliza lazy loading",
-                           "Imágenes usan formato WebP cuando el browser lo soporta",
-                           "LCP (Largest Contentful Paint) mejora medible en DevTools"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  5,
-        "updatedAt":  "2026-05-20T04:42:58.948Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "test-api-smoke",
-        "type":  "test",
-        "priority":  5,
-        "title":  "Smoke tests para endpoints críticos (wallet, auth, communities)",
-        "description":  "Tests con Jest + supertest que verifiquen que los endpoints críticos responden 200/201 con datos válidos y 401 sin token.",
-        "files":  [
-                      "server/tests/smoke.test.js"
-                  ],
-        "acceptance":  [
-                           "npm test en /server pasa sin errores",
-                           "Cubre: POST /auth/login, GET /wallet, POST /wallet/transfer, GET /communities"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  5,
-        "updatedAt":  "2026-05-20T04:43:08.350Z"
-    },
-    {
-        "id":  "feat-search-history",
-        "type":  "feature",
-        "priority":  6,
-        "title":  "Historial de búsquedas recientes (localStorage)",
-        "description":  "Guardar las últimas 8 búsquedas en localStorage y mostrarlas como chips en la barra de búsqueda cuando está vacía.",
-        "files":  [
-                      "client/src/pages/Search.jsx"
-                  ],
-        "acceptance":  [
-                           "Chips de búsquedas recientes visibles al enfocar la barra vacía",
-                           "Click en chip ejecuta la búsqueda",
-                           "Botón para limpiar historial"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  6,
-        "updatedAt":  "2026-05-20T04:42:59.312Z"
-    },
-    {
-        "id":  "api-pagination-cursor",
-        "type":  "improvement",
-        "priority":  6,
-        "title":  "Migrar paginación de offset a cursor en Feed y Chat",
-        "description":  "La paginación por offset tiene problemas con contenido dinámico. Migrar a cursor-based (usando _id) para consistencia.",
-        "files":  [
-                      "server/controllers/postController.js",
-                      "server/controllers/chatController.js",
-                      "client/src/components/HybridFeed.jsx",
-                      "client/src/social/Chat.jsx"
-                  ],
-        "acceptance":  [
-                           "GET /api/feed acepta cursor=\u003clastId\u003e",
-                           "No hay posts duplicados al paginar"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  6,
-        "updatedAt":  "2026-05-20T04:42:59.633Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "feat-post-bookmarks",
-        "type":  "feature",
-        "priority":  7,
-        "title":  "Guardar posts (bookmarks) con vista en perfil",
-        "description":  "Agregar botón 🔖 en cada post del Feed. Posts guardados accesibles en /profile/:id tab \"guardados\".",
-        "files":  [
-                      "client/src/components/HybridFeed.jsx",
-                      "server/models/User.js",
-                      "server/controllers/postController.js",
-                      "server/routes/posts.js"
-                  ],
-        "acceptance":  [
-                           "POST /api/posts/:id/bookmark — toggle guardado",
-                           "GET /api/posts/bookmarked — lista de posts guardados",
-                           "Ícono 🔖 lleno si el post está guardado"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  7,
-        "updatedAt":  "2026-05-20T04:42:59.779Z",
-        "notes":  "No hay implementación automática registrada"
-    },
-    {
-        "id":  "api-search-debounce",
-        "type":  "improvement",
-        "priority":  7,
-        "title":  "Debounce en búsqueda universal del cliente",
-        "description":  "La búsqueda dispara una request por cada keystroke. Agregar debounce de 300ms y cancelación de requests anteriores con AbortController.",
-        "files":  [
-                      "client/src/pages/Search.jsx"
-                  ],
-        "acceptance":  [
-                           "Máximo 1 request por 300ms de inactividad",
-                           "Requests obsoletas canceladas"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  7,
-        "updatedAt":  "2026-05-20T04:43:00.215Z"
-    },
-    {
-        "id":  "feat-story-reactions",
-        "type":  "feature",
-        "priority":  8,
-        "title":  "Reacciones rápidas en Stories (emojis)",
-        "description":  "Al ver una story, el usuario puede enviar una reacción emoji que llega como mensaje directo al autor.",
-        "files":  [
-                      "client/src/components/stories/StoriesBar.jsx",
-                      "server/controllers/ephemeralStoryController.js"
-                  ],
-        "acceptance":  [
-                           "6 emojis de reacción rápida",
-                           "Reacción se envía como DM automático",
-                           "Animación de emoji flotante al reaccionar"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  8
-    },
-    {
-        "id":  "feat-community-roles",
-        "type":  "feature",
-        "priority":  9,
-        "title":  "Sistema de roles en Comunidades (admin, mod, member)",
-        "description":  "Expandir el modelo de Community para soportar roles granulares: admin puede nombrar mods, mods pueden borrar posts.",
-        "files":  [
-                      "server/models/Community.js",
-                      "server/controllers/communityController.js",
-                      "client/src/pages/CommunityDetail.jsx"
-                  ],
-        "acceptance":  [
-                           "Schema Community tiene campo members: [{user, role}]",
-                           "Solo admins pueden asignar roles",
-                           "Badge de rol visible en lista de miembros"
-                       ],
-        "status":  "done",
-        "detectedAt":  "2026-05-20T04:42:51.048Z",
-        "effectivePriority":  9
-    },
-    {
-        "id":  "w3-daily-reward-ui",
-        "completedAt":  "2026-05-19T23:09:53.7203275-06:00",
-        "files":  [
-                      "client/src/pages/Wallet.jsx"
-                  ],
-        "title":  "Daily Reward UI en Wallet KRO tab",
-        "type":  "feature",
-        "description":  "Conectar getDailyReward/claimDailyReward al frontend con DailyRewardCard, streak dots y animacion de reclamo.",
-        "status":  "done",
-        "priority":  1
-    },
-    {
-        "id":  "w3-profile-dark-redesign",
-        "completedAt":  "2026-05-19T23:09:53.7433273-06:00",
-        "files":  [
-                      "client/src/social/Profile.jsx"
-                  ],
-        "title":  "Rediseno oscuro de Profile con tab Guardados",
-        "type":  "feature",
-        "description":  "Profile.jsx completo con dark UI, stats row, cover, tab de Posts y Bookmarks para perfil propio.",
-        "status":  "done",
-        "priority":  2
-    },
-    {
-        "id":  "w3-live-viewer-reactions",
-        "completedAt":  "2026-05-19T23:09:53.7433273-06:00",
-        "files":  [
-                      "client/src/pages/Live.jsx"
-                  ],
-        "title":  "Reacciones y contador de espectadores en Live",
-        "type":  "feature",
-        "description":  "Emoji reactions bar en chat viewer, floating emoji animation, viewer count badge, auto-scroll en chat.",
-        "status":  "done",
-        "priority":  3
-    },
-    {
-        "id":  "w3-live-stream-cards",
-        "completedAt":  "2026-05-19T23:09:53.7444057-06:00",
-        "files":  [
-                      "client/src/pages/Live.jsx"
-                  ],
-        "title":  "Stream cards con thumbnail y viewer count",
-        "type":  "improvement",
-        "description":  "Reemplazar stream cards planas con tarjetas con thumbnail, badge LIVE, contador de espectadores.",
-        "status":  "done",
-        "priority":  4
-    },
-    {
-        "id":  "w3-wallet-route-fix",
-        "completedAt":  "2026-05-19T23:09:53.7444057-06:00",
-        "files":  [
-                      "server/routes/wallet.js"
-                  ],
-        "title":  "Corregir doble coma en wallet.js routes",
-        "type":  "security",
-        "description":  "Bug sintactico: walletLimiter,, (doble coma) en deposit y transfer routes causaria crash al iniciar.",
-        "status":  "done",
-        "priority":  5
-    },
-    {
-        "id":  "w4-notifications-page",
-        "completedAt":  "2026-05-19T23:31:36.6957398-06:00",
-        "files":  [
-                      "client/src/pages/Notifications.jsx",
-                      "client/src/App.jsx"
-                  ],
-        "title":  "Pagina /notifications completa",
-        "type":  "feature",
-        "description":  "Nueva pagina con lista de notificaciones, filtro leidas/no leidas, markAllRead, markOneRead, iconos por tipo, timeAgo, badge rojo.",
-        "status":  "done",
-        "priority":  1
-    },
-    {
-        "id":  "w4-settings-tabs",
-        "completedAt":  "2026-05-19T23:31:36.7139061-06:00",
-        "files":  [
-                      "client/src/pages/Settings.jsx"
-                  ],
-        "title":  "Settings con 6 tabs: 2FA, Sesiones, Privacidad, Alertas, Apariencia, Cuenta",
-        "type":  "feature",
-        "description":  "Toggle switches de privacidad, preferencias de notificaciones, selector de color acento/fuente, exportar datos, eliminar cuenta con confirmacion.",
-        "status":  "done",
-        "priority":  2
-    },
-    {
-        "id":  "w4-bottomnav-notifications",
-        "completedAt":  "2026-05-19T23:31:36.7139061-06:00",
-        "files":  [
-                      "client/src/components/kronos/BottomNav.jsx"
-                  ],
-        "title":  "BottomNav con badge de notificaciones",
-        "type":  "improvement",
-        "description":  "Reemplazar icono Perfil por Notificaciones con badge rojo en tiempo real. Perfil navega al ID real del usuario.",
-        "status":  "done",
-        "priority":  3
-    },
-    {
-        "id":  "w4-profile-me-fix",
-        "completedAt":  "2026-05-19T23:31:36.7149042-06:00",
-        "files":  [
-                      "client/src/App.jsx"
-                  ],
-        "title":  "Fix /profile/me — redirigir al ID real",
-        "type":  "security",
-        "description":  "MyProfileRedirect en App.jsx: si user existe redirige a /profile/:id real, si no al login. Evita que el backend reciba el string \"me\" como ObjectId.",
-        "status":  "done",
-        "priority":  4
-    },
-    {
-        "id":  "w5-hashtag-in-feed",
-        "completedAt":  "2026-05-19T23:42:44.2311221-06:00",
-        "files":  [
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "title":  "HashtagText usado en contenido de posts del feed",
-        "type":  "improvement",
-        "description":  "HybridFeed ahora pasa post.content por HashtagText para que los hashtags sean clickables y vayan a /search?q=tag.",
-        "status":  "done",
-        "priority":  1
-    },
-    {
-        "id":  "w5-char-counter-composer",
-        "completedAt":  "2026-05-19T23:42:44.2861378-06:00",
-        "files":  [
-                      "client/src/components/HybridFeed.jsx"
-                  ],
-        "title":  "Contador de caracteres 280 en compositor de posts",
-        "type":  "improvement",
-        "description":  "Limite de 280 chars con borde naranja \u003e260 y rojo en 280. El input trunca automaticamente. Contador visible solo cuando hay texto.",
-        "status":  "done",
-        "priority":  2
-    },
-    {
-        "id":  "w5-hashtag-export",
-        "completedAt":  "2026-05-19T23:42:44.2871361-06:00",
-        "files":  [
-                      "client/src/components/kronos/index.js"
-                  ],
-        "title":  "HashtagText exportado desde kronos/index.js",
-        "type":  "improvement",
-        "description":  "Componente HashtagText ahora disponible como export nombrado desde el barrel de kronos.",
-        "status":  "done",
-        "priority":  3
-    },
-    {
-        "id":  "w5-follow-notification",
-        "completedAt":  "2026-05-19T23:42:44.2871361-06:00",
-        "files":  [
-                      "server/controllers/authController.js"
-                  ],
-        "title":  "Notificacion al seguir un usuario",
-        "type":  "feature",
-        "description":  "authController.followUser ahora llama createNotification(follow) al usuario seguido. Fire-and-forget con .catch para no interrumpir la respuesta.",
-        "status":  "done",
-        "priority":  4
-    }
+  {
+    "id": "sec-input-sanitize",
+    "type": "security",
+    "priority": 1,
+    "title": "Sanitizar inputs con express-mongo-sanitize",
+    "description": "Prevenir inyecciones NoSQL agregando express-mongo-sanitize antes de los routers en server.js.",
+    "files": [
+      "server/server.js"
+    ],
+    "acceptance": [
+      "npm install express-mongo-sanitize instalado",
+      "app.use(mongoSanitize()) registrado antes de las rutas",
+      "Payload con $where en body es bloqueado"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 0.5,
+    "updatedAt": "2026-05-20T04:43:03.748Z"
+  },
+  {
+    "id": "api-rate-limit",
+    "type": "security",
+    "priority": 1,
+    "title": "Rate limiting por endpoint sensible",
+    "description": "Aplicar express-rate-limit en /auth/login, /wallet/transfer y /wallet/deposit para prevenir fuerza bruta y abuso.",
+    "files": [
+      "server/middleware/rateLimit.js",
+      "server/routes/auth.js",
+      "server/routes/wallet.js"
+    ],
+    "acceptance": [
+      "Login bloqueado tras 10 intentos en 15 min",
+      "Transfer/deposit bloqueado tras 20 req/min",
+      "Response 429 con Retry-After header"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 1,
+    "updatedAt": "2026-05-20T04:43:05.040Z"
+  },
+  {
+    "id": "ui-loading-skeleton",
+    "type": "feature",
+    "priority": 1,
+    "title": "Agregar skeletons de carga en Feed, Wallet y Communities",
+    "description": "Reemplazar el spinner genérico con componentes Skeleton que imiten el layout real de cada página, mejorando la percepción de velocidad.",
+    "files": [
+      "client/src/pages/Feed.jsx",
+      "client/src/pages/Wallet.jsx",
+      "client/src/pages/Communities.jsx",
+      "client/src/components/kronos/Skeleton.jsx"
+    ],
+    "acceptance": [
+      "Skeleton visible durante fetch inicial",
+      "Skeleton respeta el grid de la página",
+      "Desaparece suavemente con fade-in cuando llegan los datos"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 1,
+    "updatedAt": "2026-05-20T04:42:51.846Z"
+  },
+  {
+    "id": "ui-notif-in-navbar",
+    "type": "feature",
+    "priority": 1,
+    "title": "Integrar NotificationCenter en Navbar",
+    "description": "Reemplazar el ícono de campana estático del Navbar con el componente NotificationCenter ya creado.",
+    "files": [
+      "client/src/components/Navbar.jsx"
+    ],
+    "acceptance": [
+      "Campana en Navbar muestra badge de no leídas y abre panel al click"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 1,
+    "updatedAt": "2026-05-20T04:42:52.242Z"
+  },
+  {
+    "id": "ui-skeleton-wallet",
+    "type": "improvement",
+    "priority": 1,
+    "title": "Aplicar SkeletonWalletCard en Wallet mientras carga",
+    "description": "Usar el componente SkeletonWalletCard ya creado para reemplazar el spinner de carga en la página Wallet.",
+    "files": [
+      "client/src/pages/Wallet.jsx"
+    ],
+    "acceptance": [
+      "Skeleton visible en lugar de spinner al cargar la wallet"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 1,
+    "updatedAt": "2026-05-20T04:42:52.736Z"
+  },
+  {
+    "id": "sec-xss-clean",
+    "type": "security",
+    "priority": 2,
+    "title": "Protección XSS con xss-clean",
+    "description": "Sanitizar HTML en todos los inputs del usuario antes de guardar en la DB usando el middleware xss-clean.",
+    "files": [
+      "server/server.js"
+    ],
+    "acceptance": [
+      "npm install xss-clean instalado",
+      "app.use(xss()) registrado en server.js"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 1.5,
+    "updatedAt": "2026-05-20T04:43:06.322Z"
+  },
+  {
+    "id": "ui-dark-empty-states",
+    "type": "feature",
+    "priority": 2,
+    "title": "Empty states con ilustración en Feed, Chat y Wallet",
+    "description": "Cuando no hay datos mostrar un estado vacío con icono SVG, mensaje y CTA en lugar de una pantalla en blanco.",
+    "files": [
+      "client/src/components/kronos/EmptyState.jsx",
+      "client/src/pages/Feed.jsx",
+      "client/src/social/ConversationList.jsx",
+      "client/src/pages/Wallet.jsx"
+    ],
+    "acceptance": [
+      "Componente EmptyState reutilizable con props icon, title, subtitle, ctaLabel, ctaHref",
+      "Usado en al menos 3 páginas"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 2,
+    "updatedAt": "2026-05-20T04:42:53.320Z"
+  },
+  {
+    "id": "feat-notifications-center",
+    "type": "feature",
+    "priority": 2,
+    "title": "Centro de notificaciones en tiempo real",
+    "description": "Panel de notificaciones (likes, comentarios, mensajes, transferencias) con badge de conteo no leídas en Navbar, usando Socket.io ya existente.",
+    "files": [
+      "client/src/components/NotificationCenter.jsx",
+      "client/src/components/Navbar.jsx",
+      "server/models/Notification.js",
+      "server/controllers/notificationController.js",
+      "server/routes/notifications.js"
+    ],
+    "acceptance": [
+      "Badge con número en icono de campana",
+      "Panel slide-in con lista de notificaciones",
+      "Marcar como leída al hacer click",
+      "Socket event: notification_new"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 2,
+    "updatedAt": "2026-05-20T04:42:54.389Z"
+  },
+  {
+    "id": "feat-follow-suggestions",
+    "type": "feature",
+    "priority": 2,
+    "title": "Panel \"A quién seguir\" en el Feed",
+    "description": "Sidebar o card horizontal con sugerencias de usuarios a seguir basadas en comunidades en común.",
+    "files": [
+      "client/src/components/FollowSuggestions.jsx",
+      "server/controllers/userController.js",
+      "server/routes/users.js"
+    ],
+    "acceptance": [
+      "GET /api/users/suggestions devuelve hasta 5 usuarios",
+      "Card con avatar, nombre y botón Seguir",
+      "Se actualiza al seguir a alguien"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 2,
+    "updatedAt": "2026-05-20T04:42:54.679Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "ui-skeleton-communities",
+    "type": "improvement",
+    "priority": 2,
+    "title": "Aplicar SkeletonList en Communities y Feed mientras cargan",
+    "description": "Usar SkeletonList ya creado en Communities.jsx y en el spinner inicial del HybridFeed.",
+    "files": [
+      "client/src/pages/Communities.jsx",
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "acceptance": [
+      "Skeletons visibles en ambas páginas durante carga inicial"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 2,
+    "updatedAt": "2026-05-20T04:42:55.063Z"
+  },
+  {
+    "id": "api-compress-responses",
+    "type": "improvement",
+    "priority": 2,
+    "title": "Compresión gzip/brotli en respuestas del servidor",
+    "description": "Agregar el middleware compression de Express para reducir el tamaño de las respuestas JSON y HTML en producción.",
+    "files": [
+      "server/server.js"
+    ],
+    "acceptance": [
+      "npm install compression instalado en /server",
+      "Respuestas con Content-Encoding: gzip para clientes que lo soporten"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 2,
+    "updatedAt": "2026-05-20T04:42:55.449Z"
+  },
+  {
+    "id": "feat-wallet-qr",
+    "type": "feature",
+    "priority": 3,
+    "title": "QR de pago en Wallet",
+    "description": "Generar un código QR único por usuario para recibir pagos/transferencias sin necesidad de buscar por username.",
+    "files": [
+      "client/src/pages/Wallet.jsx",
+      "client/src/components/kronos/QRCode.jsx"
+    ],
+    "acceptance": [
+      "QR visible en tab \"wallet\"",
+      "QR contiene deeplink kronos://pay/<userId>",
+      "Botón de descargar QR como imagen"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 3,
+    "updatedAt": "2026-05-20T04:42:56.010Z"
+  },
+  {
+    "id": "ui-post-image-upload",
+    "type": "feature",
+    "priority": 3,
+    "title": "Subir imagen al crear post en el Feed",
+    "description": "Agregar botón de adjuntar imagen al composer del HybridFeed, con preview y upload a Cloudinary.",
+    "files": [
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "acceptance": [
+      "Botón 📷 en el composer abre file picker",
+      "Preview de la imagen antes de publicar",
+      "Imagen incluida en el post al publicar"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 3,
+    "updatedAt": "2026-05-20T04:42:56.323Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "feat-token-daily-reward",
+    "type": "feature",
+    "priority": 3,
+    "title": "Sistema de Daily Rewards en Tokens (check-in diario)",
+    "description": "Permitir al usuario reclamar tokens una vez por día. Muestra racha de días consecutivos y recompensa escalada.",
+    "files": [
+      "client/src/pages/Wallet.jsx",
+      "server/controllers/walletController.js",
+      "server/routes/wallet.js"
+    ],
+    "acceptance": [
+      "GET /api/wallet/daily-reward — devuelve { claimed, streakDays, reward }",
+      "POST /api/wallet/daily-reward — reclama la recompensa del día",
+      "UI en tab \"kro\" muestra estado del daily reward y racha"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 3,
+    "updatedAt": "2026-05-20T04:42:56.914Z"
+  },
+  {
+    "id": "ui-toast-system",
+    "type": "improvement",
+    "priority": 3,
+    "title": "Unificar sistema de notificaciones toast",
+    "description": "Centralizar todos los toast/alert en un solo helper useToast() que use react-hot-toast ya instalado. Eliminar console.log de errores visibles al usuario.",
+    "files": [
+      "client/src/hooks/useToast.js",
+      "client/src/pages/Wallet.jsx",
+      "client/src/pages/Communities.jsx",
+      "client/src/pages/Live.jsx"
+    ],
+    "acceptance": [
+      "Hook useToast exportado desde hooks/",
+      "No hay alert() nativo en el código",
+      "Errores de API muestran mensaje al usuario vía toast"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 3,
+    "updatedAt": "2026-05-20T04:42:57.378Z"
+  },
+  {
+    "id": "perf-virtual-list",
+    "type": "improvement",
+    "priority": 4,
+    "title": "Virtualizar lista del Feed para manejar 1000+ posts",
+    "description": "Usar react-window o la API nativa de Intersection Observer para renderizar solo los posts visibles y reducir DOM nodes.",
+    "files": [
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "acceptance": [
+      "Feed con 200+ posts no causa jank",
+      "Memory usage no crece linealmente con el scroll"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 4,
+    "updatedAt": "2026-05-20T04:42:57.693Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "api-morgan-logging",
+    "type": "improvement",
+    "priority": 4,
+    "title": "Request logging con Morgan en el servidor",
+    "description": "Agregar Morgan en modo \"dev\" para desarrollo y \"combined\" para producción. Redirigir logs a archivo en prod.",
+    "files": [
+      "server/server.js"
+    ],
+    "acceptance": [
+      "npm install morgan instalado",
+      "Logs de requests visibles en consola en desarrollo"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 4,
+    "updatedAt": "2026-05-20T04:42:57.985Z"
+  },
+  {
+    "id": "test-wallet-unit",
+    "type": "test",
+    "priority": 4,
+    "title": "Unit tests del walletController (transfer, deposit, getWallet)",
+    "description": "Tests unitarios con Jest que mockean MongoDB y verifican la lógica de negocio del wallet.",
+    "files": [
+      "server/tests/wallet.test.js"
+    ],
+    "acceptance": [
+      "Transfer entre usuarios actualiza ambos balances",
+      "Deposit incrementa balance",
+      "Transfer con balance insuficiente retorna 400"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 4,
+    "updatedAt": "2026-05-20T04:43:07.477Z"
+  },
+  {
+    "id": "feat-trending-hashtags",
+    "type": "feature",
+    "priority": 5,
+    "title": "Hashtags clicables en posts con trending sidebar",
+    "description": "Detectar #hashtags en el contenido de posts, convertirlos en links y mostrar un panel de trending en el Feed.",
+    "files": [
+      "client/src/components/HashtagText.jsx",
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "acceptance": [
+      "Componente HashtagText parsea #word y los convierte en spans clicables",
+      "Click en hashtag filtra el feed por ese tag"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 4.5,
+    "updatedAt": "2026-05-20T04:42:58.633Z"
+  },
+  {
+    "id": "perf-image-lazy",
+    "type": "improvement",
+    "priority": 5,
+    "title": "Lazy loading nativo en todas las imágenes",
+    "description": "Agregar loading=\"lazy\" y placeholder blur en todos los <img> del proyecto. Usar Cloudinary URL transformations para servir WebP y tamaños correctos.",
+    "files": [
+      "client/src/components/kronos/KronosImage.jsx",
+      "client/src/social/Feed.jsx",
+      "client/src/pages/Communities.jsx"
+    ],
+    "acceptance": [
+      "Componente KronosImage centraliza lazy loading",
+      "Imágenes usan formato WebP cuando el browser lo soporta",
+      "LCP (Largest Contentful Paint) mejora medible en DevTools"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 5,
+    "updatedAt": "2026-05-20T04:42:58.948Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "test-api-smoke",
+    "type": "test",
+    "priority": 5,
+    "title": "Smoke tests para endpoints críticos (wallet, auth, communities)",
+    "description": "Tests con Jest + supertest que verifiquen que los endpoints críticos responden 200/201 con datos válidos y 401 sin token.",
+    "files": [
+      "server/tests/smoke.test.js"
+    ],
+    "acceptance": [
+      "npm test en /server pasa sin errores",
+      "Cubre: POST /auth/login, GET /wallet, POST /wallet/transfer, GET /communities"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 5,
+    "updatedAt": "2026-05-20T04:43:08.350Z"
+  },
+  {
+    "id": "feat-search-history",
+    "type": "feature",
+    "priority": 6,
+    "title": "Historial de búsquedas recientes (localStorage)",
+    "description": "Guardar las últimas 8 búsquedas en localStorage y mostrarlas como chips en la barra de búsqueda cuando está vacía.",
+    "files": [
+      "client/src/pages/Search.jsx"
+    ],
+    "acceptance": [
+      "Chips de búsquedas recientes visibles al enfocar la barra vacía",
+      "Click en chip ejecuta la búsqueda",
+      "Botón para limpiar historial"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 6,
+    "updatedAt": "2026-05-20T04:42:59.312Z"
+  },
+  {
+    "id": "api-pagination-cursor",
+    "type": "improvement",
+    "priority": 6,
+    "title": "Migrar paginación de offset a cursor en Feed y Chat",
+    "description": "La paginación por offset tiene problemas con contenido dinámico. Migrar a cursor-based (usando _id) para consistencia.",
+    "files": [
+      "server/controllers/postController.js",
+      "server/controllers/chatController.js",
+      "client/src/components/HybridFeed.jsx",
+      "client/src/social/Chat.jsx"
+    ],
+    "acceptance": [
+      "GET /api/feed acepta cursor=<lastId>",
+      "No hay posts duplicados al paginar"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 6,
+    "updatedAt": "2026-05-20T04:42:59.633Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "feat-post-bookmarks",
+    "type": "feature",
+    "priority": 7,
+    "title": "Guardar posts (bookmarks) con vista en perfil",
+    "description": "Agregar botón 🔖 en cada post del Feed. Posts guardados accesibles en /profile/:id tab \"guardados\".",
+    "files": [
+      "client/src/components/HybridFeed.jsx",
+      "server/models/User.js",
+      "server/controllers/postController.js",
+      "server/routes/posts.js"
+    ],
+    "acceptance": [
+      "POST /api/posts/:id/bookmark — toggle guardado",
+      "GET /api/posts/bookmarked — lista de posts guardados",
+      "Ícono 🔖 lleno si el post está guardado"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 7,
+    "updatedAt": "2026-05-20T04:42:59.779Z",
+    "notes": "No hay implementación automática registrada"
+  },
+  {
+    "id": "api-search-debounce",
+    "type": "improvement",
+    "priority": 7,
+    "title": "Debounce en búsqueda universal del cliente",
+    "description": "La búsqueda dispara una request por cada keystroke. Agregar debounce de 300ms y cancelación de requests anteriores con AbortController.",
+    "files": [
+      "client/src/pages/Search.jsx"
+    ],
+    "acceptance": [
+      "Máximo 1 request por 300ms de inactividad",
+      "Requests obsoletas canceladas"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 7,
+    "updatedAt": "2026-05-20T04:43:00.215Z"
+  },
+  {
+    "id": "feat-story-reactions",
+    "type": "feature",
+    "priority": 8,
+    "title": "Reacciones rápidas en Stories (emojis)",
+    "description": "Al ver una story, el usuario puede enviar una reacción emoji que llega como mensaje directo al autor.",
+    "files": [
+      "client/src/components/stories/StoriesBar.jsx",
+      "server/controllers/ephemeralStoryController.js"
+    ],
+    "acceptance": [
+      "6 emojis de reacción rápida",
+      "Reacción se envía como DM automático",
+      "Animación de emoji flotante al reaccionar"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 8
+  },
+  {
+    "id": "feat-community-roles",
+    "type": "feature",
+    "priority": 9,
+    "title": "Sistema de roles en Comunidades (admin, mod, member)",
+    "description": "Expandir el modelo de Community para soportar roles granulares: admin puede nombrar mods, mods pueden borrar posts.",
+    "files": [
+      "server/models/Community.js",
+      "server/controllers/communityController.js",
+      "client/src/pages/CommunityDetail.jsx"
+    ],
+    "acceptance": [
+      "Schema Community tiene campo members: [{user, role}]",
+      "Solo admins pueden asignar roles",
+      "Badge de rol visible en lista de miembros"
+    ],
+    "status": "done",
+    "detectedAt": "2026-05-20T04:42:51.048Z",
+    "effectivePriority": 9
+  },
+  {
+    "id": "w3-daily-reward-ui",
+    "completedAt": "2026-05-19T23:09:53.7203275-06:00",
+    "files": [
+      "client/src/pages/Wallet.jsx"
+    ],
+    "title": "Daily Reward UI en Wallet KRO tab",
+    "type": "feature",
+    "description": "Conectar getDailyReward/claimDailyReward al frontend con DailyRewardCard, streak dots y animacion de reclamo.",
+    "status": "done",
+    "priority": 1
+  },
+  {
+    "id": "w3-profile-dark-redesign",
+    "completedAt": "2026-05-19T23:09:53.7433273-06:00",
+    "files": [
+      "client/src/social/Profile.jsx"
+    ],
+    "title": "Rediseno oscuro de Profile con tab Guardados",
+    "type": "feature",
+    "description": "Profile.jsx completo con dark UI, stats row, cover, tab de Posts y Bookmarks para perfil propio.",
+    "status": "done",
+    "priority": 2
+  },
+  {
+    "id": "w3-live-viewer-reactions",
+    "completedAt": "2026-05-19T23:09:53.7433273-06:00",
+    "files": [
+      "client/src/pages/Live.jsx"
+    ],
+    "title": "Reacciones y contador de espectadores en Live",
+    "type": "feature",
+    "description": "Emoji reactions bar en chat viewer, floating emoji animation, viewer count badge, auto-scroll en chat.",
+    "status": "done",
+    "priority": 3
+  },
+  {
+    "id": "w3-live-stream-cards",
+    "completedAt": "2026-05-19T23:09:53.7444057-06:00",
+    "files": [
+      "client/src/pages/Live.jsx"
+    ],
+    "title": "Stream cards con thumbnail y viewer count",
+    "type": "improvement",
+    "description": "Reemplazar stream cards planas con tarjetas con thumbnail, badge LIVE, contador de espectadores.",
+    "status": "done",
+    "priority": 4
+  },
+  {
+    "id": "w3-wallet-route-fix",
+    "completedAt": "2026-05-19T23:09:53.7444057-06:00",
+    "files": [
+      "server/routes/wallet.js"
+    ],
+    "title": "Corregir doble coma en wallet.js routes",
+    "type": "security",
+    "description": "Bug sintactico: walletLimiter,, (doble coma) en deposit y transfer routes causaria crash al iniciar.",
+    "status": "done",
+    "priority": 5
+  },
+  {
+    "id": "w4-notifications-page",
+    "completedAt": "2026-05-19T23:31:36.6957398-06:00",
+    "files": [
+      "client/src/pages/Notifications.jsx",
+      "client/src/App.jsx"
+    ],
+    "title": "Pagina /notifications completa",
+    "type": "feature",
+    "description": "Nueva pagina con lista de notificaciones, filtro leidas/no leidas, markAllRead, markOneRead, iconos por tipo, timeAgo, badge rojo.",
+    "status": "done",
+    "priority": 1
+  },
+  {
+    "id": "w4-settings-tabs",
+    "completedAt": "2026-05-19T23:31:36.7139061-06:00",
+    "files": [
+      "client/src/pages/Settings.jsx"
+    ],
+    "title": "Settings con 6 tabs: 2FA, Sesiones, Privacidad, Alertas, Apariencia, Cuenta",
+    "type": "feature",
+    "description": "Toggle switches de privacidad, preferencias de notificaciones, selector de color acento/fuente, exportar datos, eliminar cuenta con confirmacion.",
+    "status": "done",
+    "priority": 2
+  },
+  {
+    "id": "w4-bottomnav-notifications",
+    "completedAt": "2026-05-19T23:31:36.7139061-06:00",
+    "files": [
+      "client/src/components/kronos/BottomNav.jsx"
+    ],
+    "title": "BottomNav con badge de notificaciones",
+    "type": "improvement",
+    "description": "Reemplazar icono Perfil por Notificaciones con badge rojo en tiempo real. Perfil navega al ID real del usuario.",
+    "status": "done",
+    "priority": 3
+  },
+  {
+    "id": "w4-profile-me-fix",
+    "completedAt": "2026-05-19T23:31:36.7149042-06:00",
+    "files": [
+      "client/src/App.jsx"
+    ],
+    "title": "Fix /profile/me — redirigir al ID real",
+    "type": "security",
+    "description": "MyProfileRedirect en App.jsx: si user existe redirige a /profile/:id real, si no al login. Evita que el backend reciba el string \"me\" como ObjectId.",
+    "status": "done",
+    "priority": 4
+  },
+  {
+    "id": "w5-hashtag-in-feed",
+    "completedAt": "2026-05-19T23:42:44.2311221-06:00",
+    "files": [
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "title": "HashtagText usado en contenido de posts del feed",
+    "type": "improvement",
+    "description": "HybridFeed ahora pasa post.content por HashtagText para que los hashtags sean clickables y vayan a /search?q=tag.",
+    "status": "done",
+    "priority": 1
+  },
+  {
+    "id": "w5-char-counter-composer",
+    "completedAt": "2026-05-19T23:42:44.2861378-06:00",
+    "files": [
+      "client/src/components/HybridFeed.jsx"
+    ],
+    "title": "Contador de caracteres 280 en compositor de posts",
+    "type": "improvement",
+    "description": "Limite de 280 chars con borde naranja >260 y rojo en 280. El input trunca automaticamente. Contador visible solo cuando hay texto.",
+    "status": "done",
+    "priority": 2
+  },
+  {
+    "id": "w5-hashtag-export",
+    "completedAt": "2026-05-19T23:42:44.2871361-06:00",
+    "files": [
+      "client/src/components/kronos/index.js"
+    ],
+    "title": "HashtagText exportado desde kronos/index.js",
+    "type": "improvement",
+    "description": "Componente HashtagText ahora disponible como export nombrado desde el barrel de kronos.",
+    "status": "done",
+    "priority": 3
+  },
+  {
+    "id": "w5-follow-notification",
+    "completedAt": "2026-05-19T23:42:44.2871361-06:00",
+    "files": [
+      "server/controllers/authController.js"
+    ],
+    "title": "Notificacion al seguir un usuario",
+    "type": "feature",
+    "description": "authController.followUser ahora llama createNotification(follow) al usuario seguido. Fire-and-forget con .catch para no interrumpir la respuesta.",
+    "status": "done",
+    "priority": 4
+  }
 ]
