@@ -50,8 +50,8 @@ const TIERS = [
     name: 'Pro',
     price: '$9.99',
     cadence: 'al mes',
-    accent: 'linear-gradient(135deg, rgba(124,58,237,0.18), rgba(6,182,212,0.12))',
-    border: 'rgba(168,85,247,0.45)',
+    accent: 'linear-gradient(135deg, rgba(139,92,246,0.20), rgba(109,75,208,0.10))',
+    border: 'rgba(139,92,246,0.50)',
     highlighted: true,
     features: [
       { label: 'Posts ilimitados', ok: true },
@@ -110,7 +110,7 @@ const TierCard = ({ tier, currentTier, onSelect, busy }) => {
         gap: 16,
         position: 'relative',
         boxShadow: isHighlighted
-          ? '0 12px 32px rgba(124,58,237,0.18), 0 0 0 1px rgba(168,85,247,0.25)'
+          ? '0 12px 36px rgba(139,92,246,0.28), 0 0 0 1px rgba(139,92,246,0.30)'
           : '0 6px 16px rgba(0,0,0,0.25)',
         transform: isHighlighted ? 'scale(1.03)' : 'none'
       }}
@@ -121,14 +121,15 @@ const TierCard = ({ tier, currentTier, onSelect, busy }) => {
             position: 'absolute',
             top: -12,
             right: 16,
-            background: 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)',
+            background: 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)',
             color: '#fff',
             fontSize: 11,
             fontWeight: 700,
             padding: '4px 10px',
             borderRadius: 10,
             letterSpacing: 1,
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            boxShadow: '0 6px 16px -4px rgba(139,92,246,0.6)'
           }}
         >
           Recomendado
@@ -203,10 +204,11 @@ const TierCard = ({ tier, currentTier, onSelect, busy }) => {
               border: 'none',
               cursor: busy ? 'wait' : 'pointer',
               background: isHighlighted
-                ? 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)'
+                ? 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)'
                 : tier.id === 'plus'
                   ? 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)'
                   : 'linear-gradient(135deg, #3b82f6, #1e40af)',
+              boxShadow: isHighlighted ? '0 12px 30px -10px rgba(139,92,246,0.5)' : 'none',
               color: '#fff',
               fontWeight: 700,
               fontSize: 14,
@@ -247,7 +249,7 @@ export default function Pricing() {
           style={{
             fontSize: 42,
             margin: 0,
-            background: 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)',
+            background: 'linear-gradient(135deg,#ffffff 0%,#c9ced4 35%,#a78bfa 100%)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',

@@ -381,8 +381,8 @@ export default function Wallet() {
               <div style={{ color: 'rgba(201,206,212,0.35)', fontSize: 12 }}>{data?.cash?.currency || 'USD'}</div>
 
               {data?.kro && (
-                <div style={{ marginTop: 16, padding: '10px 20px', background: 'rgba(168,85,247,0.15)', borderRadius: 12, display: 'inline-block' }}>
-                  <span style={{ color: '#c9ced4', fontSize: 14, fontWeight: 700 }}>
+                <div style={{ marginTop: 16, padding: '10px 20px', background: 'rgba(139,92,246,0.14)', border: '1px solid rgba(139,92,246,0.35)', borderRadius: 12, display: 'inline-block' }}>
+                  <span style={{ color: '#a78bfa', fontSize: 14, fontWeight: 700, textShadow: '0 0 12px rgba(139,92,246,0.35)' }}>
                     {parseFloat(data.kro.tokenBalance || 0).toFixed(0)} KRO
                   </span>
                   <span style={{ color: 'rgba(201,206,212,0.35)', fontSize: 12 }}> tokens</span>
@@ -489,12 +489,12 @@ export default function Wallet() {
                       ].map(item => (
                         <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                           <span style={{ color: 'rgba(201,206,212,0.50)', fontSize: 14 }}>{item.label}</span>
-                          <span style={{ color: '#c9ced4', fontSize: 14, fontWeight: 700 }}>{item.value}</span>
+                          <span style={{ color: '#a78bfa', fontSize: 14, fontWeight: 700, textShadow: '0 0 12px rgba(139,92,246,0.35)' }}>{item.value}</span>
                         </div>
                       ))}
                     </GlassCard>
                     <div style={{ display: 'flex', gap: 10 }}>
-                      <a href="/tokens" style={{ flex: 1, padding: '12px', borderRadius: 14, background: 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', textAlign: 'center', textDecoration: 'none' }}>
+                      <a href="/tokens" style={{ flex: 1, padding: '12px', borderRadius: 14, background: 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', textAlign: 'center', textDecoration: 'none', boxShadow: '0 12px 30px -10px rgba(139,92,246,0.45)' }}>
                         ⭐ Gestionar KRO
                       </a>
                     </div>
@@ -504,7 +504,7 @@ export default function Wallet() {
                     <div style={{ fontSize: 40, marginBottom: 8 }}>⭐</div>
                     <div>Wallet KRO no inicializada</div>
                     <button onClick={async () => { await axios.post(`${API_URL}/tokens/wallet/init`); fetchWallet(); }}
-                      style={{ marginTop: 16, padding: '10px 24px', borderRadius: 20, background: 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
+                      style={{ marginTop: 16, padding: '10px 24px', borderRadius: 20, background: 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, boxShadow: '0 12px 30px -10px rgba(139,92,246,0.45)' }}>
                       Inicializar KRO Wallet
                     </button>
                   </div>

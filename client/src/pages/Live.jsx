@@ -416,7 +416,7 @@ export default function Live() {
             { id: 'videocall', label: '📹 Videollamada' },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
-              style={{ flex: 1, padding: '10px', borderRadius: 12, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', background: tab === t.id ? 'linear-gradient(135deg,#ef4444,#f59e0b)' : 'rgba(255,255,255,0.06)', color: '#fff' }}>
+              style={{ flex: 1, padding: '10px', borderRadius: 12, fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', background: tab === t.id ? 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)' : 'rgba(255,255,255,0.06)', color: '#fff' }}>
               {t.label}
             </button>
           ))}
@@ -432,7 +432,7 @@ export default function Live() {
                   <div style={{ color: '#c9ced4', fontSize: 16, fontWeight: 700, marginBottom: 6 }}>¿Quieres transmitir?</div>
                   <div style={{ color: 'rgba(201,206,212,0.50)', fontSize: 13, marginBottom: 16 }}>Tu audiencia te está esperando</div>
                   <button onClick={() => setStreaming(true)}
-                    style={{ padding: '12px 32px', borderRadius: 28, background: 'linear-gradient(135deg,#ef4444,#f59e0b)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                    style={{ padding: '12px 32px', borderRadius: 28, background: 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', boxShadow: '0 12px 30px -10px rgba(139,92,246,0.5)' }}>
                     🔴 Ir en Vivo
                   </button>
                 </GlassCard>
@@ -499,7 +499,7 @@ export default function Live() {
                   <div style={{ color: 'rgba(201,206,212,0.50)', fontSize: 12 }}>@{u.username}</div>
                 </div>
                 <button onClick={() => startCall(u)}
-                  style={{ padding: '8px 18px', borderRadius: 20, background: 'linear-gradient(180deg,#2c2f32 0%,#1a1c1e 100%)', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  style={{ padding: '8px 18px', borderRadius: 20, background: 'linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#6d4bd0 100%)', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 8px 22px -8px rgba(139,92,246,0.5)' }}>
                   📹 Llamar
                 </button>
               </div>
