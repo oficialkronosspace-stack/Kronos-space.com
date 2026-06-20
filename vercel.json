@@ -3,6 +3,13 @@
   "buildCommand": "cd client && npm install --legacy-peer-deps && npm run build",
   "outputDirectory": "client/build",
   "framework": "create-react-app",
+  "env": {
+    "REACT_APP_API_URL": "@react_app_api_url",
+    "REACT_APP_SOCKET_URL": "@react_app_socket_url",
+    "REACT_APP_STRIPE_PUBLIC_KEY": "@react_app_stripe_public_key",
+    "REACT_APP_CLOUDINARY_CLOUD_NAME": "@react_app_cloudinary_cloud_name",
+    "REACT_APP_CLOUDINARY_UPLOAD_PRESET": "@react_app_cloudinary_upload_preset"
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
@@ -12,7 +19,8 @@
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     },
     {
