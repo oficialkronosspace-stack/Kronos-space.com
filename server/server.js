@@ -67,7 +67,11 @@ const isAllowedOrigin = (origin) => {
   if (!origin) return true; // apps móviles, Postman, server-to-server
   const o = normalizeOrigin(origin);
   if (allowedOrigins.includes(o)) return true;
-  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(o);
+  // Allow all *.vercel.app for Vercel previews
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(o)) return true;
+  // Allow Vercel production domains
+  if (process.env.CLIENT_URL && o.includes('vercel.app')) return true;
+  return false;
 };
 
 console.log(`[CORS] Orígenes permitidos: ${allowedOrigins.join(', ')} (+ *.vercel.app)`);
@@ -519,14 +523,14 @@ if (process.env.NODE_ENV !== 'test') {
       }
 
       await Product.insertMany([
-        { seller: seller._id, name: 'Playera Kronos Negra', description: 'Playera premium con logo Kronos bordado, tela 100% algodón.', price: 299, originalPrice: 399, category: 'shirts', images: ['https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=80'], sizes: [{ size: 'S', stock: 5 }, { size: 'M', stock: 10 }, { size: 'L', stock: 8 }], colors: ['Negro'], rating: 4.8, inStock: true },
-        { seller: seller._id, name: 'Sudadera Morada Kronos', description: 'Sudadera con capucha, diseño exclusivo Kronos. Cálida y cómoda.', price: 599, originalPrice: 799, category: 'outerwear', images: ['https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80'], sizes: [{ size: 'S', stock: 3 }, { size: 'M', stock: 7 }, { size: 'L', stock: 5 }], colors: ['Morado', 'Negro'], rating: 4.9, inStock: true },
-        { seller: seller._id, name: 'Jogger Urbano', description: 'Pantalón jogger estilo streetwear, cintura elástica, bolsillos laterales.', price: 449, category: 'pants', images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80'], sizes: [{ size: 'S', stock: 4 }, { size: 'M', stock: 9 }, { size: 'L', stock: 6 }], colors: ['Gris', 'Negro'], rating: 4.6, inStock: true },
-        { seller: seller._id, name: 'Tenis Kronos Run', description: 'Tenis deportivos ligeros con suela antideslizante y plantilla ergonómica.', price: 1299, originalPrice: 1599, category: 'shoes', images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80'], sizes: [{ size: '26', stock: 5 }, { size: '27', stock: 4 }, { size: '28', stock: 3 }], colors: ['Blanco/Negro', 'Todo negro'], rating: 4.7, inStock: true },
-        { seller: seller._id, name: 'Vestido Galaxia', description: 'Vestido corto con estampado galáctico, corte tipo A. Ideal para salir.', price: 699, category: 'dresses', images: ['https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=400&q=80'], sizes: [{ size: 'XS', stock: 2 }, { size: 'S', stock: 4 }, { size: 'M', stock: 6 }], colors: ['Azul galaxia', 'Negro'], rating: 4.5, inStock: true },
-        { seller: seller._id, name: 'Gorra Snapback Kronos', description: 'Gorra ajustable con parche bordado Kronos, visera plana.', price: 199, category: 'accessories', images: ['https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&q=80'], sizes: [{ size: 'Única', stock: 20 }], colors: ['Negro', 'Blanco'], rating: 4.4, inStock: true },
-        { seller: seller._id, name: 'Chamarra Bomber', description: 'Chamarra bomber estilo varsity, forro suave, cierre central.', price: 899, originalPrice: 1099, category: 'outerwear', images: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&q=80'], sizes: [{ size: 'S', stock: 2 }, { size: 'M', stock: 5 }, { size: 'L', stock: 4 }], colors: ['Negro', 'Verde oliva'], rating: 4.7, inStock: true },
-        { seller: seller._id, name: 'Vestido Noche Estrellada', description: 'Vestido largo con destellos, perfecto para eventos nocturnos.', price: 999, category: 'dresses', images: ['https://images.unsplash.com/photo-1566479179817-c0b55c52e1bc?w=400&q=80'], sizes: [{ size: 'XS', stock: 1 }, { size: 'S', stock: 3 }, { size: 'M', stock: 5 }], colors: ['Negro con destellos'], rating: 4.9, inStock: true },
+        { seller: seller._id, name: 'Playera Kronos Negra', description: 'Playera premium con logo Kronos bordado, tela 100% algodón.', price: 299, originalPrice: 399, category: 'shirts', images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500'] },
+        { seller: seller._id, name: 'Sudadera Morada Kronos', description: 'Sudadera con capucha, diseño exclusivo Kronos. Cálida y cómoda.', price: 599, originalPrice: 799, category: 'outerwear', images: ['https://images.unsplash.com/photo-1556821552-23d516b32500?w=500'] },
+        { seller: seller._id, name: 'Jogger Urbano', description: 'Pantalón jogger estilo streetwear, cintura elástica, bolsillos laterales.', price: 449, category: 'pants', images: ['https://images.unsplash.com/photo-1541002588063-c0fea71f9893?w=500'] },
+        { seller: seller._id, name: 'Tenis Kronos Run', description: 'Tenis deportivos ligeros con suela antideslizante y plantilla ergonómica.', price: 1299, originalPrice: 1599, category: 'shoes', images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500'] },
+        { seller: seller._id, name: 'Vestido Galaxia', description: 'Vestido corto con estampado galáctico, corte tipo A. Ideal para salir.', price: 699, category: 'dresses', images: ['https://images.unsplash.com/photo-1590080876022-cd8b8d2d82cf?w=500'] },
+        { seller: seller._id, name: 'Gorra Snapback Kronos', description: 'Gorra ajustable con parche bordado Kronos, visera plana.', price: 199, category: 'accessories', images: ['https://images.unsplash.com/photo-1613017442097-5ae79760bed4?w=500'] },
+        { seller: seller._id, name: 'Chamarra Bomber', description: 'Chamarra bomber estilo varsity, forro suave, cierre central.', price: 899, originalPrice: 1099, category: 'outerwear', images: ['https://images.unsplash.com/photo-1590918014844-abc2c959e336?w=500'] },
+        { seller: seller._id, name: 'Vestido Noche Estrellada', description: 'Vestido largo con destellos, perfecto para eventos nocturnos.', price: 999, category: 'dresses', images: ['https://images.unsplash.com/photo-1598270261629-a84e1bc4e9df?w=500'] },
       ]);
       console.log('✓ Demo products seeded (8 items)');
     } catch (err) {
